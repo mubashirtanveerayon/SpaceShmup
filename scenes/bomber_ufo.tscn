@@ -1,0 +1,45 @@
+[gd_scene load_steps=8 format=3 uid="uid://cw3ufjy2t8d2p"]
+
+[ext_resource type="Texture2D" uid="uid://dsrobotp5hokg" path="res://assets/pico8_invaders_sprites_LARGE(1).png" id="1_24qtl"]
+[ext_resource type="PackedScene" uid="uid://opltjpyr02rd" path="res://scenes/enemy.tscn" id="1_57rfn"]
+[ext_resource type="Script" path="res://scripts/BomberUFOMovementComponent.gd" id="2_0l0dg"]
+[ext_resource type="Script" path="res://scripts/bomber_ufo.gd" id="2_q7esy"]
+[ext_resource type="PackedScene" uid="uid://cb7wbxbc328gn" path="res://scenes/spawner.tscn" id="4_gq2p0"]
+[ext_resource type="PackedScene" uid="uid://bd6av0h44m25o" path="res://scenes/bomb.tscn" id="5_2if7a"]
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_gn3ng"]
+size = Vector2(16, 6)
+
+[node name="BomberUFO" instance=ExtResource("1_57rfn")]
+script = ExtResource("2_q7esy")
+bomb_spawn_frequeny_min = 2.5
+bomb_spawn_frequeny_max = 4.0
+unique_id = 2
+death_point = 50
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="HealthSystem" index="0"]
+shape = SubResource("RectangleShape2D_gn3ng")
+
+[node name="MovementComponent" parent="." index="1"]
+script = ExtResource("2_0l0dg")
+acceleration = 100
+max_speed = 80
+
+[node name="Sprite2D" type="Sprite2D" parent="Visual" index="0"]
+texture = ExtResource("1_24qtl")
+region_enabled = true
+region_rect = Rect2(72, 32, 16, 8)
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="." index="4"]
+shape = SubResource("RectangleShape2D_gn3ng")
+
+[node name="Spawner" parent="." index="5" instance=ExtResource("4_gq2p0")]
+object_scene = ExtResource("5_2if7a")
+
+[node name="Marker2D" type="Marker2D" parent="Spawner" index="1"]
+position = Vector2(0, 4)
+
+[node name="VisibleOnScreenNotifier2D" type="VisibleOnScreenNotifier2D" parent="." index="6"]
+scale = Vector2(0.8, 0.3)
+
+[connection signal="screen_exited" from="VisibleOnScreenNotifier2D" to="MovementComponent" method="_on_visible_on_screen_notifier_2d_screen_exited"]

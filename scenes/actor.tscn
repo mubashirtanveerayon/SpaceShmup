@@ -1,0 +1,21 @@
+[gd_scene load_steps=4 format=3 uid="uid://qqytkqopoc2b"]
+
+[ext_resource type="Script" path="res://scripts/damage_system.gd" id="1_58s26"]
+[ext_resource type="Script" path="res://scripts/actor.gd" id="1_pvwjg"]
+[ext_resource type="Script" path="res://scripts/MovementComponent.gd" id="3_c6dwd"]
+
+[node name="Actor" type="CharacterBody2D"]
+motion_mode = 1
+wall_min_slide_angle = 0.0
+script = ExtResource("1_pvwjg")
+
+[node name="HealthSystem" type="Area2D" parent="."]
+script = ExtResource("1_58s26")
+can_deal_damage = false
+
+[node name="MovementComponent" type="Node2D" parent="."]
+script = ExtResource("3_c6dwd")
+
+[node name="Visual" type="Node2D" parent="."]
+
+[connection signal="destroyed" from="HealthSystem" to="." method="_on_health_system_destroyed"]

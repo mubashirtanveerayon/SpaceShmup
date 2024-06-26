@@ -1,0 +1,28 @@
+[gd_scene load_steps=5 format=3 uid="uid://bvjymhfn4e0n6"]
+
+[ext_resource type="PackedScene" uid="uid://c4umpwtl6o6ut" path="res://scenes/projectile.tscn" id="1_qdpul"]
+[ext_resource type="Texture2D" uid="uid://dsrobotp5hokg" path="res://assets/pico8_invaders_sprites_LARGE(1).png" id="2_eke4y"]
+[ext_resource type="Script" path="res://scripts/EnemyProjectileMovementComponent.gd" id="2_m83dp"]
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_qgllf"]
+size = Vector2(8, 8)
+
+[node name="EnemyProjectile" instance=ExtResource("1_qdpul")]
+collision_layer = 8
+damage = 50
+
+[node name="ProjectileMovementComponent" parent="." index="0"]
+script = ExtResource("2_m83dp")
+max_speed = 60
+
+[node name="VisibleOnScreenNotifier2D" parent="." index="1"]
+position = Vector2(2.38419e-07, 2.38419e-07)
+scale = Vector2(0.4, 0.4)
+
+[node name="Sprite2D" type="Sprite2D" parent="." index="2"]
+texture = ExtResource("2_eke4y")
+region_enabled = true
+region_rect = Rect2(8, 32, 8, 8)
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="." index="3"]
+shape = SubResource("RectangleShape2D_qgllf")

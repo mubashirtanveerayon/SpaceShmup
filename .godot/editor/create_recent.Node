@@ -1,0 +1,14 @@
+AudioStreamPlayer
+Sprite2D
+Timer
+Marker2D
+CollisionShape2D
+VisibleOnScreenNotifier2D
+Node2D
+Label
+Control
+ProgressBar
+TextureRect
+CanvasLayer
+Area2D
+AudioStreamPlayer2D

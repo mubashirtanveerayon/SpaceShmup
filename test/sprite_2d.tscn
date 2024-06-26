@@ -1,0 +1,19 @@
+[gd_scene load_steps=5 format=3 uid="uid://ds2e63qlfkpl5"]
+
+[ext_resource type="Shader" path="res://shader/bgremoval.gdshader" id="1_ccaca"]
+[ext_resource type="Texture2D" uid="uid://14mi27vi2a41" path="res://assets/pico8_invaders_sprites_LARGE.png" id="2_1qokm"]
+
+[sub_resource type="ShaderMaterial" id="ShaderMaterial_m6vij"]
+shader = ExtResource("1_ccaca")
+
+[sub_resource type="GDScript" id="GDScript_jpnfe"]
+script/source = "extends Sprite2D
+
+func _ready():
+	get_texture().get_image().save_png(\"res://removed.png\")
+"
+
+[node name="Sprite2D" type="Sprite2D"]
+material = SubResource("ShaderMaterial_m6vij")
+texture = ExtResource("2_1qokm")
+script = SubResource("GDScript_jpnfe")

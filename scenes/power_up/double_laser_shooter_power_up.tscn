@@ -1,0 +1,54 @@
+[gd_scene load_steps=9 format=3 uid="uid://dx32wck4kgurq"]
+
+[ext_resource type="PackedScene" uid="uid://bi6700oninjo3" path="res://scenes/power_up.tscn" id="1_7c2t0"]
+[ext_resource type="Script" path="res://scripts/power_up/DoubleLaserShooterPowerUp.gd" id="2_jl04c"]
+[ext_resource type="Texture2D" uid="uid://dsrobotp5hokg" path="res://assets/pico8_invaders_sprites_LARGE(1).png" id="4_ku5yg"]
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_jb83y"]
+atlas = ExtResource("4_ku5yg")
+region = Rect2(8, 40, 8, 8)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_wx70d"]
+atlas = ExtResource("4_ku5yg")
+region = Rect2(8, 48, 8, 8)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_6y4ba"]
+atlas = ExtResource("4_ku5yg")
+region = Rect2(8, 56, 8, 8)
+
+[sub_resource type="SpriteFrames" id="SpriteFrames_gbq7w"]
+animations = [{
+"frames": [{
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_jb83y")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_wx70d")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_6y4ba")
+}],
+"loop": true,
+"name": &"default",
+"speed": 5.0
+}]
+
+[sub_resource type="CircleShape2D" id="CircleShape2D_oj4av"]
+radius = 6.08276
+
+[node name="DoubleLaserShooterPowerUp" instance=ExtResource("1_7c2t0")]
+script = ExtResource("2_jl04c")
+double_laser_power_up_duration = 8.0
+
+[node name="AnimatedSprite2D" parent="." index="1"]
+scale = Vector2(2.5, 2.5)
+sprite_frames = SubResource("SpriteFrames_gbq7w")
+autoplay = "default"
+frame_progress = 0.424092
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="." index="2"]
+shape = SubResource("CircleShape2D_oj4av")
+
+[node name="VisibleOnScreenNotifier2D" parent="." index="3"]
+position = Vector2(-4.76837e-07, 0)
+scale = Vector2(0.6, 0.6)

@@ -1,0 +1,208 @@
+[gd_scene load_steps=25 format=3 uid="uid://colclun1i62f8"]
+
+[ext_resource type="PackedScene" uid="uid://opltjpyr02rd" path="res://scenes/enemy.tscn" id="1_24fng"]
+[ext_resource type="Texture2D" uid="uid://dsrobotp5hokg" path="res://assets/pico8_invaders_sprites_LARGE(1).png" id="2_4t23c"]
+[ext_resource type="Script" path="res://scripts/basic_enemy.gd" id="2_n6655"]
+[ext_resource type="Script" path="res://scripts/BasicEnemyMovementComponent.gd" id="2_sya64"]
+[ext_resource type="AudioStream" uid="uid://7ph5gxlkybuu" path="res://assets/audio/hitHurt(3).wav" id="4_bb1r7"]
+[ext_resource type="Script" path="res://scripts/basic_enemy_animated_sprite.gd" id="5_aji3w"]
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_u4jgc"]
+size = Vector2(12, 12)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_lulbd"]
+atlas = ExtResource("2_4t23c")
+region = Rect2(80, 0, 8, 8)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_iflns"]
+atlas = ExtResource("2_4t23c")
+region = Rect2(80, 8, 8, 8)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_jlv2r"]
+atlas = ExtResource("2_4t23c")
+region = Rect2(24, 0, 8, 8)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_fst6b"]
+atlas = ExtResource("2_4t23c")
+region = Rect2(24, 8, 8, 8)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_hbxqx"]
+atlas = ExtResource("2_4t23c")
+region = Rect2(48, 0, 8, 8)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_d32ng"]
+atlas = ExtResource("2_4t23c")
+region = Rect2(48, 8, 8, 8)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_7n8ms"]
+atlas = ExtResource("2_4t23c")
+region = Rect2(64, 0, 8, 8)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_x238d"]
+atlas = ExtResource("2_4t23c")
+region = Rect2(64, 8, 8, 8)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_csudx"]
+atlas = ExtResource("2_4t23c")
+region = Rect2(40, 0, 8, 8)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_6kufe"]
+atlas = ExtResource("2_4t23c")
+region = Rect2(40, 8, 8, 8)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_3x164"]
+atlas = ExtResource("2_4t23c")
+region = Rect2(72, 0, 8, 8)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_jrfxg"]
+atlas = ExtResource("2_4t23c")
+region = Rect2(72, 8, 8, 8)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_5ciyg"]
+atlas = ExtResource("2_4t23c")
+region = Rect2(32, 0, 8, 8)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_kcjeg"]
+atlas = ExtResource("2_4t23c")
+region = Rect2(32, 8, 8, 8)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_b8xt5"]
+atlas = ExtResource("2_4t23c")
+region = Rect2(56, 0, 8, 8)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_gtjb3"]
+atlas = ExtResource("2_4t23c")
+region = Rect2(56, 8, 8, 8)
+
+[sub_resource type="SpriteFrames" id="SpriteFrames_ywpyx"]
+animations = [{
+"frames": [{
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_lulbd")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_iflns")
+}],
+"loop": true,
+"name": &"blue",
+"speed": 5.0
+}, {
+"frames": [{
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_jlv2r")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_fst6b")
+}],
+"loop": true,
+"name": &"green",
+"speed": 5.0
+}, {
+"frames": [{
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_hbxqx")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_d32ng")
+}],
+"loop": true,
+"name": &"green_2",
+"speed": 5.0
+}, {
+"frames": [{
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_7n8ms")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_x238d")
+}],
+"loop": true,
+"name": &"pink",
+"speed": 5.0
+}, {
+"frames": [{
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_csudx")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_6kufe")
+}],
+"loop": true,
+"name": &"red",
+"speed": 5.0
+}, {
+"frames": [{
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_3x164")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_jrfxg")
+}],
+"loop": true,
+"name": &"silver",
+"speed": 5.0
+}, {
+"frames": [{
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_5ciyg")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_kcjeg")
+}],
+"loop": true,
+"name": &"yellow",
+"speed": 5.0
+}, {
+"frames": [{
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_b8xt5")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_gtjb3")
+}],
+"loop": true,
+"name": &"yellow_2",
+"speed": 5.0
+}]
+
+[node name="BasicEnemy" instance=ExtResource("1_24fng")]
+script = ExtResource("2_n6655")
+death_point = 10
+
+[node name="HealthSystem" parent="." index="0"]
+health = 100
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="HealthSystem" index="0"]
+shape = SubResource("RectangleShape2D_u4jgc")
+
+[node name="MovementComponent" parent="." index="1"]
+script = ExtResource("2_sya64")
+direction_change_timer = 2.0
+acceleration = 50
+max_speed = 20
+
+[node name="Timer" type="Timer" parent="MovementComponent" index="0"]
+
+[node name="AnimatedSprite2D" type="AnimatedSprite2D" parent="Visual" index="0"]
+scale = Vector2(1.5, 1.5)
+sprite_frames = SubResource("SpriteFrames_ywpyx")
+animation = &"yellow"
+script = ExtResource("5_aji3w")
+
+[node name="Explosion" parent="." index="3"]
+position = Vector2(0, 1)
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="." index="4"]
+shape = SubResource("RectangleShape2D_u4jgc")
+
+[node name="HitSound" type="AudioStreamPlayer2D" parent="." index="5"]
+stream = ExtResource("4_bb1r7")
+
+[node name="VisibleOnScreenNotifier2D" type="VisibleOnScreenNotifier2D" parent="." index="6"]
+position = Vector2(-4.76837e-07, 1.78814e-07)
+scale = Vector2(0.6, 0.6)
+
+[connection signal="took_damage" from="HealthSystem" to="." method="_on_health_system_took_damage"]
+[connection signal="timeout" from="MovementComponent/Timer" to="MovementComponent" method="_on_timer_timeout"]
+[connection signal="screen_entered" from="VisibleOnScreenNotifier2D" to="MovementComponent" method="_on_visible_on_screen_notifier_2d_screen_entered"]
+[connection signal="screen_exited" from="VisibleOnScreenNotifier2D" to="MovementComponent" method="_on_visible_on_screen_notifier_2d_screen_exited"]

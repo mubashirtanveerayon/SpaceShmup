@@ -1,0 +1,293 @@
+[gd_scene load_steps=20 format=3 uid="uid://bop47ake2pexq"]
+
+[ext_resource type="PackedScene" uid="uid://donrkn5p10hg" path="res://scenes/player.tscn" id="1_ys2o1"]
+[ext_resource type="PackedScene" uid="uid://colclun1i62f8" path="res://scenes/basic_enemy.tscn" id="2_mccnp"]
+[ext_resource type="PackedScene" uid="uid://dcv6r7cassn87" path="res://scenes/limited_spawner.tscn" id="4_5q2j5"]
+[ext_resource type="Script" path="res://scripts/ParallaxBackground.gd" id="4_c3osd"]
+[ext_resource type="Texture2D" uid="uid://dsrobotp5hokg" path="res://assets/pico8_invaders_sprites_LARGE(1).png" id="5_2st35"]
+[ext_resource type="PackedScene" uid="uid://chxhntyic1up" path="res://scenes/shooter_enemy.tscn" id="6_ll2sy"]
+[ext_resource type="PackedScene" uid="uid://cw3ufjy2t8d2p" path="res://scenes/bomber_ufo.tscn" id="7_ctqda"]
+[ext_resource type="FontFile" uid="uid://c45raxvnju0m3" path="res://assets/fonts/kenney_mini_square.ttf" id="8_3i6uo"]
+[ext_resource type="Script" path="res://scripts/ui/stats.gd" id="8_4qvps"]
+[ext_resource type="PackedScene" uid="uid://7n47pc0cdrlq" path="res://scenes/power_up/power_up_spawner.tscn" id="10_37tgw"]
+[ext_resource type="PackedScene" uid="uid://bb8b3ynurjoo3" path="res://scenes/power_up/health_power_up.tscn" id="12_5qwh8"]
+[ext_resource type="PackedScene" uid="uid://dumlcwrfgejg8" path="res://scenes/power_up/invincible_power_up.tscn" id="13_3xtik"]
+[ext_resource type="PackedScene" uid="uid://dx32wck4kgurq" path="res://scenes/power_up/double_laser_shooter_power_up.tscn" id="13_b74pj"]
+[ext_resource type="AudioStream" uid="uid://d3pj65047a0tc" path="res://assets/audio/POL-final-sacrifice-short.wav" id="14_0qvss"]
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_kuxug"]
+size = Vector2(20, 320)
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_pe4uv"]
+size = Vector2(180, 20)
+
+[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_vk5xc"]
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_hfggu"]
+bg_color = Color(0.345098, 1, 0.470588, 1)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_et7ih"]
+atlas = ExtResource("5_2st35")
+region = Rect2(0, 104, 128, 24)
+
+[node name="World" type="Node2D" groups=["world"]]
+
+[node name="Player" parent="." instance=ExtResource("1_ys2o1")]
+position = Vector2(89, 284)
+wall_min_slide_angle = 0.261799
+
+[node name="Boundary" type="Node2D" parent="."]
+
+[node name="Left" type="StaticBody2D" parent="Boundary"]
+position = Vector2(-10, 160)
+collision_layer = 16
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="Boundary/Left"]
+shape = SubResource("RectangleShape2D_kuxug")
+
+[node name="Right" type="StaticBody2D" parent="Boundary"]
+position = Vector2(190, 160)
+collision_layer = 16
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="Boundary/Right"]
+shape = SubResource("RectangleShape2D_kuxug")
+
+[node name="Top" type="StaticBody2D" parent="Boundary"]
+position = Vector2(90, -10)
+collision_layer = 16
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="Boundary/Top"]
+shape = SubResource("RectangleShape2D_pe4uv")
+
+[node name="Bottom" type="StaticBody2D" parent="Boundary"]
+position = Vector2(90, 330)
+collision_layer = 16
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="Boundary/Bottom"]
+shape = SubResource("RectangleShape2D_pe4uv")
+
+[node name="ParallaxBackground" type="ParallaxBackground" parent="."]
+script = ExtResource("4_c3osd")
+speed = Vector2(0.2, 10)
+
+[node name="CPUParticles2D" type="CPUParticles2D" parent="ParallaxBackground"]
+position = Vector2(61, -49)
+amount = 15
+lifetime = 3.0
+emission_shape = 3
+emission_rect_extents = Vector2(180, 1)
+direction = Vector2(0, 1)
+spread = 0.0
+gravity = Vector2(0, 0)
+initial_velocity_min = 150.0
+initial_velocity_max = 150.0
+
+[node name="ParallaxLayer" type="ParallaxLayer" parent="ParallaxBackground"]
+motion_mirroring = Vector2(180, 320)
+
+[node name="Sprite2D" type="Sprite2D" parent="ParallaxBackground/ParallaxLayer"]
+position = Vector2(45, 46)
+texture = ExtResource("5_2st35")
+region_enabled = true
+region_rect = Rect2(88, 0, 16, 16)
+
+[node name="Sprite2D2" type="Sprite2D" parent="ParallaxBackground/ParallaxLayer"]
+position = Vector2(116, 22)
+texture = ExtResource("5_2st35")
+region_enabled = true
+region_rect = Rect2(104, 0, 16, 16)
+
+[node name="Sprite2D3" type="Sprite2D" parent="ParallaxBackground/ParallaxLayer"]
+position = Vector2(90, 96)
+texture = ExtResource("5_2st35")
+region_enabled = true
+region_rect = Rect2(120, 0, 8, 8)
+
+[node name="Sprite2D4" type="Sprite2D" parent="ParallaxBackground/ParallaxLayer"]
+position = Vector2(39, 174)
+texture = ExtResource("5_2st35")
+region_enabled = true
+region_rect = Rect2(104, 0, 16, 16)
+
+[node name="Sprite2D5" type="Sprite2D" parent="ParallaxBackground/ParallaxLayer"]
+position = Vector2(110, 194)
+texture = ExtResource("5_2st35")
+region_enabled = true
+region_rect = Rect2(104, 0, 16, 16)
+
+[node name="Sprite2D6" type="Sprite2D" parent="ParallaxBackground/ParallaxLayer"]
+position = Vector2(37, 256)
+texture = ExtResource("5_2st35")
+region_enabled = true
+region_rect = Rect2(88, 16, 16, 8)
+
+[node name="Sprite2D8" type="Sprite2D" parent="ParallaxBackground/ParallaxLayer"]
+position = Vector2(130, 50)
+texture = ExtResource("5_2st35")
+region_enabled = true
+region_rect = Rect2(120, 0, 8, 8)
+
+[node name="Sprite2D9" type="Sprite2D" parent="ParallaxBackground/ParallaxLayer"]
+position = Vector2(79, 128)
+texture = ExtResource("5_2st35")
+region_enabled = true
+region_rect = Rect2(104, 0, 16, 16)
+
+[node name="Sprite2D10" type="Sprite2D" parent="ParallaxBackground/ParallaxLayer"]
+position = Vector2(172, 164)
+texture = ExtResource("5_2st35")
+region_enabled = true
+region_rect = Rect2(104, 0, 16, 16)
+
+[node name="Sprite2D11" type="Sprite2D" parent="ParallaxBackground/ParallaxLayer"]
+position = Vector2(149, 254)
+texture = ExtResource("5_2st35")
+region_enabled = true
+region_rect = Rect2(88, 16, 16, 8)
+
+[node name="Sprite2D7" type="Sprite2D" parent="ParallaxBackground/ParallaxLayer"]
+position = Vector2(164, 116)
+texture = ExtResource("5_2st35")
+region_enabled = true
+region_rect = Rect2(120, 8, 8, 8)
+
+[node name="LimitedBasicEnemySpawner" parent="." instance=ExtResource("4_5q2j5")]
+max = 10
+add_as_owner_sibling = false
+object_scene = ExtResource("2_mccnp")
+spawn_interval = 5.0
+
+[node name="Marker2D" type="Marker2D" parent="LimitedBasicEnemySpawner"]
+position = Vector2(29, -92)
+
+[node name="Marker2D2" type="Marker2D" parent="LimitedBasicEnemySpawner"]
+position = Vector2(118, -97)
+
+[node name="LimitedShooterEnemySpawner" parent="." instance=ExtResource("4_5q2j5")]
+add_as_owner_sibling = false
+object_scene = ExtResource("6_ll2sy")
+
+[node name="Marker2D" type="Marker2D" parent="LimitedShooterEnemySpawner"]
+position = Vector2(152, -128)
+
+[node name="Marker2D2" type="Marker2D" parent="LimitedShooterEnemySpawner"]
+position = Vector2(62, -131)
+
+[node name="LimitedBomberEnemySpawner" parent="." instance=ExtResource("4_5q2j5")]
+max = 2
+add_as_owner_sibling = false
+object_scene = ExtResource("7_ctqda")
+spawn_interval = 5.0
+
+[node name="Marker2D" type="Marker2D" parent="LimitedBomberEnemySpawner"]
+position = Vector2(33, -41)
+
+[node name="Marker2D4" type="Marker2D" parent="LimitedBomberEnemySpawner"]
+position = Vector2(142, -42)
+
+[node name="HUD" type="CanvasLayer" parent="."]
+
+[node name="Stats" type="Control" parent="HUD"]
+layout_mode = 3
+anchors_preset = 0
+offset_right = 40.0
+offset_bottom = 40.0
+script = ExtResource("8_4qvps")
+
+[node name="ProgressBar" type="ProgressBar" parent="HUD/Stats"]
+layout_mode = 0
+offset_left = 7.0
+offset_top = 5.0
+offset_right = 47.0
+offset_bottom = 18.0
+theme_override_styles/background = SubResource("StyleBoxEmpty_vk5xc")
+theme_override_styles/fill = SubResource("StyleBoxFlat_hfggu")
+value = 50.0
+show_percentage = false
+
+[node name="EnemiesKilledStats" type="Control" parent="HUD/Stats"]
+anchors_preset = 0
+offset_right = 40.0
+offset_bottom = 40.0
+
+[node name="BasicEnemy" type="Sprite2D" parent="HUD/Stats/EnemiesKilledStats"]
+position = Vector2(58, 11)
+texture = ExtResource("5_2st35")
+region_enabled = true
+region_rect = Rect2(40, 0, 8, 8)
+
+[node name="Label" type="Label" parent="HUD/Stats/EnemiesKilledStats/BasicEnemy"]
+offset_left = 4.0
+offset_top = -7.0
+offset_right = 24.0
+offset_bottom = 13.0
+theme_override_fonts/font = ExtResource("8_3i6uo")
+theme_override_font_sizes/font_size = 10
+text = "12"
+
+[node name="ShooterEnemy" type="Sprite2D" parent="HUD/Stats/EnemiesKilledStats"]
+position = Vector2(81, 11)
+texture = ExtResource("5_2st35")
+region_enabled = true
+region_rect = Rect2(72, 16, 16, 16)
+
+[node name="Label" type="Label" parent="HUD/Stats/EnemiesKilledStats/ShooterEnemy"]
+offset_left = 7.0
+offset_top = -7.0
+offset_right = 27.0
+offset_bottom = 13.0
+theme_override_fonts/font = ExtResource("8_3i6uo")
+theme_override_font_sizes/font_size = 10
+text = "10"
+
+[node name="BomberUFO" type="Sprite2D" parent="HUD/Stats/EnemiesKilledStats"]
+position = Vector2(107, 11)
+texture = ExtResource("5_2st35")
+region_enabled = true
+region_rect = Rect2(72, 32, 16, 8)
+
+[node name="Label" type="Label" parent="HUD/Stats/EnemiesKilledStats/BomberUFO"]
+offset_left = 8.0
+offset_top = -7.0
+offset_right = 28.0
+offset_bottom = 16.0
+theme_override_fonts/font = ExtResource("8_3i6uo")
+theme_override_font_sizes/font_size = 10
+text = "11"
+
+[node name="Score" type="Label" parent="HUD/Stats"]
+layout_mode = 0
+offset_left = 145.0
+offset_top = 3.0
+offset_right = 170.0
+offset_bottom = 20.0
+theme_override_fonts/font = ExtResource("8_3i6uo")
+theme_override_font_sizes/font_size = 13
+text = "0
+"
+horizontal_alignment = 1
+
+[node name="TextureRect" type="TextureRect" parent="HUD/Stats"]
+layout_mode = 0
+offset_right = 180.0
+offset_bottom = 24.0
+texture = SubResource("AtlasTexture_et7ih")
+stretch_mode = 1
+
+[node name="PowerUpSpawner" parent="." instance=ExtResource("10_37tgw")]
+power_up_scenes = Array[PackedScene]([ExtResource("13_3xtik"), ExtResource("12_5qwh8"), ExtResource("13_b74pj")])
+spawn_interval_probability = 2.5
+
+[node name="Marker2D" type="Marker2D" parent="PowerUpSpawner"]
+position = Vector2(28, -30)
+
+[node name="Marker2D2" type="Marker2D" parent="PowerUpSpawner"]
+position = Vector2(91, -30)
+
+[node name="Marker2D3" type="Marker2D" parent="PowerUpSpawner"]
+position = Vector2(154, -30)
+
+[node name="AudioStreamPlayer" type="AudioStreamPlayer" parent="."]
+stream = ExtResource("14_0qvss")
+volume_db = -9.801
+autoplay = true

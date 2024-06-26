@@ -1,0 +1,86 @@
+[gd_scene load_steps=10 format=3 uid="uid://chxhntyic1up"]
+
+[ext_resource type="PackedScene" uid="uid://opltjpyr02rd" path="res://scenes/enemy.tscn" id="1_m8tp8"]
+[ext_resource type="Script" path="res://scripts/shooter_enemy.gd" id="2_6sugr"]
+[ext_resource type="Script" path="res://scripts/BasicEnemyMovementComponent.gd" id="2_j5xp1"]
+[ext_resource type="PackedScene" uid="uid://cb7wbxbc328gn" path="res://scenes/spawner.tscn" id="3_auo6r"]
+[ext_resource type="Texture2D" uid="uid://dsrobotp5hokg" path="res://assets/pico8_invaders_sprites_LARGE(1).png" id="3_j7ht2"]
+[ext_resource type="PackedScene" uid="uid://bvjymhfn4e0n6" path="res://scenes/enemy_projectile.tscn" id="5_awkjn"]
+[ext_resource type="AudioStream" uid="uid://7ph5gxlkybuu" path="res://assets/audio/hitHurt(3).wav" id="7_afgl6"]
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_i17ly"]
+size = Vector2(14, 14)
+
+[sub_resource type="GDScript" id="GDScript_ebfjm"]
+script/source = "extends Node2D
+
+
+func _ready()->void:
+	get_children().pick_random().visible=true
+"
+
+[node name="ShooterEnemy" instance=ExtResource("1_m8tp8")]
+script = ExtResource("2_6sugr")
+unique_id = 1
+death_point = 20
+
+[node name="HealthSystem" parent="." index="0"]
+damage = 70
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="HealthSystem" index="0"]
+shape = SubResource("RectangleShape2D_i17ly")
+
+[node name="MovementComponent" parent="." index="1"]
+script = ExtResource("2_j5xp1")
+direction_change_timer = 1.0
+acceleration = 50
+max_speed = 30
+
+[node name="Timer" type="Timer" parent="MovementComponent" index="0"]
+
+[node name="Sprites" type="Node2D" parent="Visual" index="0"]
+script = SubResource("GDScript_ebfjm")
+
+[node name="Sprite2D" type="Sprite2D" parent="Visual/Sprites" index="0"]
+visible = false
+texture = ExtResource("3_j7ht2")
+region_enabled = true
+region_rect = Rect2(24, 16, 16, 16)
+
+[node name="Sprite2D2" type="Sprite2D" parent="Visual/Sprites" index="1"]
+visible = false
+texture = ExtResource("3_j7ht2")
+region_enabled = true
+region_rect = Rect2(40, 16, 16, 16)
+
+[node name="Sprite2D3" type="Sprite2D" parent="Visual/Sprites" index="2"]
+visible = false
+texture = ExtResource("3_j7ht2")
+region_enabled = true
+region_rect = Rect2(72, 16, 16, 16)
+
+[node name="Explosion" parent="." index="3"]
+explosion_type = 2
+
+[node name="Spawner" parent="." index="4" instance=ExtResource("3_auo6r")]
+object_scene = ExtResource("5_awkjn")
+spawn_interval = 4.0
+
+[node name="Marker2D" type="Marker2D" parent="Spawner" index="1"]
+position = Vector2(0, 8)
+
+[node name="VisibleOnScreenNotifier2D" type="VisibleOnScreenNotifier2D" parent="." index="5"]
+position = Vector2(4.17233e-07, 0)
+scale = Vector2(0.8, 0.8)
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="." index="6"]
+shape = SubResource("RectangleShape2D_i17ly")
+
+[node name="HitSound" type="AudioStreamPlayer2D" parent="." index="7"]
+stream = ExtResource("7_afgl6")
+
+[connection signal="took_damage" from="HealthSystem" to="." method="_on_health_system_took_damage"]
+[connection signal="timeout" from="MovementComponent/Timer" to="MovementComponent" method="_on_timer_timeout"]
+[connection signal="finished" from="Explosion" to="." method="_on_explosion_finished"]
+[connection signal="screen_entered" from="VisibleOnScreenNotifier2D" to="MovementComponent" method="_on_visible_on_screen_notifier_2d_screen_entered"]
+[connection signal="screen_exited" from="VisibleOnScreenNotifier2D" to="MovementComponent" method="_on_visible_on_screen_notifier_2d_screen_exited"]

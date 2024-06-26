@@ -1,0 +1,14 @@
+[gd_scene load_steps=3 format=3 uid="uid://bikgodo838wk4"]
+
+[ext_resource type="PackedScene" uid="uid://cb7wbxbc328gn" path="res://scenes/spawner.tscn" id="1_nswf3"]
+[ext_resource type="PackedScene" uid="uid://i1mmxpjpent1" path="res://scenes/player_projectile.tscn" id="2_fu8fq"]
+
+[node name="DoubleLaserShooter" instance=ExtResource("1_nswf3")]
+object_scene = ExtResource("2_fu8fq")
+spawn_interval = 0.3
+
+[node name="Marker2D" type="Marker2D" parent="." index="1"]
+position = Vector2(5, -8)
+
+[node name="Marker2D2" type="Marker2D" parent="." index="2"]
+position = Vector2(-5, -8)

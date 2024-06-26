@@ -1,0 +1,11 @@
+[gd_scene load_steps=2 format=3 uid="uid://cjjw3a3q8a01p"]
+
+[ext_resource type="Script" path="res://scripts/FlashEffect.gd" id="1_4nde4"]
+
+[node name="FlashEffect" type="Node2D"]
+script = ExtResource("1_4nde4")
+
+[node name="Timer" type="Timer" parent="."]
+one_shot = true
+
+[connection signal="timeout" from="Timer" to="." method="_on_timer_timeout"]

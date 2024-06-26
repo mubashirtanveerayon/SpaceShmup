@@ -1,0 +1,10 @@
+[gd_scene load_steps=3 format=3 uid="uid://dcv6r7cassn87"]
+
+[ext_resource type="PackedScene" uid="uid://cb7wbxbc328gn" path="res://scenes/spawner.tscn" id="1_25yrl"]
+[ext_resource type="Script" path="res://scripts/LimitedSpawner.gd" id="2_ae2kr"]
+
+[node name="LimitedSpawner" instance=ExtResource("1_25yrl")]
+script = ExtResource("2_ae2kr")
+max = 5
+
+[connection signal="spawned_objects" from="." to="." method="_on_spawned_objects"]

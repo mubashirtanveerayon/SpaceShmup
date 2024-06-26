@@ -1,0 +1,58 @@
+[gd_scene load_steps=9 format=3 uid="uid://i1mmxpjpent1"]
+
+[ext_resource type="PackedScene" uid="uid://c4umpwtl6o6ut" path="res://scenes/projectile.tscn" id="1_my23k"]
+[ext_resource type="Script" path="res://scripts/PlayerProjectileMovementComponent.gd" id="2_200in"]
+[ext_resource type="Texture2D" uid="uid://dsrobotp5hokg" path="res://assets/pico8_invaders_sprites_LARGE(1).png" id="3_20k5o"]
+[ext_resource type="AudioStream" uid="uid://5e7byyha01me" path="res://assets/audio/laserShoot(7).wav" id="4_lgxj4"]
+[ext_resource type="Shader" path="res://shader/flash.gdshader" id="4_me7ns"]
+
+[sub_resource type="ShaderMaterial" id="ShaderMaterial_h3250"]
+shader = ExtResource("4_me7ns")
+shader_parameter/enabled = false
+shader_parameter/dead_pixel_threshold = 0.3
+
+[sub_resource type="GDScript" id="GDScript_b0ebr"]
+script/source = "extends Sprite2D
+
+@export var flash_duration:float=0.3
+
+func _ready()->void:
+	await owner.ready
+	material.set_shader_parameter(\"enabled\",true)
+	await get_tree().create_timer(flash_duration).timeout
+	material.set_shader_parameter(\"enabled\",false)
+"
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_o6kk0"]
+size = Vector2(6, 16)
+
+[node name="PlayerProjectile" instance=ExtResource("1_my23k")]
+collision_layer = 2
+collision_mask = 4
+damage = 150
+metadata/_edit_group_ = true
+
+[node name="ProjectileMovementComponent" parent="." index="0"]
+script = ExtResource("2_200in")
+max_speed = 500
+
+[node name="VisibleOnScreenNotifier2D" parent="." index="1"]
+position = Vector2(2.38419e-07, 0)
+scale = Vector2(0.5, 1)
+
+[node name="Sprite2D" type="Sprite2D" parent="." index="2"]
+material = SubResource("ShaderMaterial_h3250")
+scale = Vector2(2.5, 2.5)
+texture = ExtResource("3_20k5o")
+region_enabled = true
+region_rect = Rect2(0, 16, 8, 8)
+script = SubResource("GDScript_b0ebr")
+flash_duration = 0.1
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="." index="3"]
+shape = SubResource("RectangleShape2D_o6kk0")
+
+[node name="AudioStreamPlayer2D" type="AudioStreamPlayer2D" parent="." index="4"]
+stream = ExtResource("4_lgxj4")
+volume_db = -13.783
+autoplay = true

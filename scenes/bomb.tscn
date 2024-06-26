@@ -1,0 +1,98 @@
+[gd_scene load_steps=11 format=3 uid="uid://bd6av0h44m25o"]
+
+[ext_resource type="PackedScene" uid="uid://c4umpwtl6o6ut" path="res://scenes/projectile.tscn" id="1_ylu7x"]
+[ext_resource type="Script" path="res://scripts/Bomb.gd" id="2_sgekf"]
+[ext_resource type="Script" path="res://scripts/BombMovementComponent.gd" id="3_h53qw"]
+[ext_resource type="PackedScene" uid="uid://bdmk4qin1nnoh" path="res://scenes/explosion.tscn" id="3_u528t"]
+[ext_resource type="Texture2D" uid="uid://dsrobotp5hokg" path="res://assets/pico8_invaders_sprites_LARGE(1).png" id="4_75f8s"]
+[ext_resource type="Shader" path="res://shader/flash.gdshader" id="4_k4m3i"]
+
+[sub_resource type="CircleShape2D" id="CircleShape2D_5rmck"]
+radius = 34.0147
+
+[sub_resource type="GDScript" id="GDScript_pudaa"]
+script/source = "extends Node2D
+
+func begin_flash():
+	flash()
+	$Timer.start()
+
+func flash():
+	$Sprite2D2.material.set_shader_parameter(\"enabled\",not $Sprite2D2.material.get_shader_parameter(\"enabled\"))
+	#$Sprite2D.material.set_shader_parameter(\"enabled\",not $Sprite2D.material.get_shader_parameter(\"enabled\"))
+
+func _on_timer_timeout():
+	flash()
+	
+"
+
+[sub_resource type="ShaderMaterial" id="ShaderMaterial_acap7"]
+resource_local_to_scene = true
+shader = ExtResource("4_k4m3i")
+shader_parameter/enabled = false
+shader_parameter/dead_pixel_threshold = 0.3
+
+[sub_resource type="Gradient" id="Gradient_jafsf"]
+offsets = PackedFloat32Array(0, 0.482143, 1)
+colors = PackedColorArray(1, 1, 0, 1, 1, 0.462745, 0, 1, 1, 0, 0, 1)
+
+[node name="Bomb" instance=ExtResource("1_ylu7x")]
+collision_layer = 8
+collision_mask = 5
+script = ExtResource("2_sgekf")
+detonation_time = 1.5
+damage = 300
+metadata/_edit_group_ = true
+
+[node name="ProjectileMovementComponent" parent="." index="0"]
+script = ExtResource("3_h53qw")
+friction = 25
+max_delta_rotation = 1.5
+max_speed = 80
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="." index="2"]
+shape = SubResource("CircleShape2D_5rmck")
+disabled = true
+
+[node name="Explosion" parent="." index="3" instance=ExtResource("3_u528t")]
+scale = Vector2(2, 2)
+explosion_type = 2
+
+[node name="Visual" type="Node2D" parent="." index="4"]
+script = SubResource("GDScript_pudaa")
+
+[node name="Sprite2D" type="Sprite2D" parent="Visual" index="0"]
+material = SubResource("ShaderMaterial_acap7")
+scale = Vector2(1.5, 1.5)
+texture = ExtResource("4_75f8s")
+region_enabled = true
+region_rect = Rect2(32, 48, 8, 8)
+
+[node name="CPUParticles2D" type="CPUParticles2D" parent="Visual" index="1"]
+position = Vector2(3, -2)
+lifetime = 0.1
+explosiveness = 1.0
+spread = 180.0
+gravity = Vector2(0, 0)
+initial_velocity_min = 100.0
+initial_velocity_max = 200.0
+color_ramp = SubResource("Gradient_jafsf")
+
+[node name="Sprite2D2" type="Sprite2D" parent="Visual" index="2"]
+material = SubResource("ShaderMaterial_acap7")
+scale = Vector2(3, 3)
+texture = ExtResource("4_75f8s")
+offset = Vector2(3, -1)
+region_enabled = true
+region_rect = Rect2(0, 64, 32, 32)
+
+[node name="Timer" type="Timer" parent="Visual" index="3"]
+wait_time = 0.1
+autostart = true
+
+[node name="Timer" type="Timer" parent="." index="5"]
+one_shot = true
+
+[connection signal="finished" from="Explosion" to="." method="_on_explosion_finished"]
+[connection signal="timeout" from="Visual/Timer" to="Visual" method="_on_timer_timeout"]
+[connection signal="timeout" from="Timer" to="." method="_on_timer_timeout"]
