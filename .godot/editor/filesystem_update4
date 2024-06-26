@@ -1,8 +1,7 @@
-res://scenes/bomb.tscn
+res://scenes/world.tscn
 res://shader/flash.gdshader
 res://shader/bgremoval.gdshader
 res://scenes/explosion.tscn
-res://scenes/world.tscn
 res://scenes/enemy.tscn
 res://scenes/player_projectile.tscn
 res://scenes/bomber_ufo.tscn
@@ -13,9 +12,7 @@ res://scenes/double_laser_shooter.tscn
 res://scenes/power_up/health_power_up.tscn
 res://scenes/power_up/invincible_power_up.tscn
 res://scenes/power_up/power_up_spawner.tscn
-res://scripts/Bomb.gd
-res://scripts/power_up/DoubleLaserShooterPowerUp.gd
-res://scripts/PowerUP.gd
-res://scripts/power_up/invincible_power_up.gd
-res://scenes/basic_enemy.tscn
+res://scenes/bomb.tscn
 res://scenes/shooter_enemy.tscn
+res://scenes/basic_enemy.tscn
+res://scenes/enemy_projectile.tscn

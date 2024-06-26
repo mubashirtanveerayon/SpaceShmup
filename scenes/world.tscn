@@ -1,4 +1,4 @@
-[gd_scene load_steps=20 format=3 uid="uid://bop47ake2pexq"]
+[gd_scene load_steps=21 format=3 uid="uid://bop47ake2pexq"]
 
 [ext_resource type="PackedScene" uid="uid://donrkn5p10hg" path="res://scenes/player.tscn" id="1_ys2o1"]
 [ext_resource type="PackedScene" uid="uid://colclun1i62f8" path="res://scenes/basic_enemy.tscn" id="2_mccnp"]
@@ -29,6 +29,34 @@ bg_color = Color(0.345098, 1, 0.470588, 1)
 [sub_resource type="AtlasTexture" id="AtlasTexture_et7ih"]
 atlas = ExtResource("5_2st35")
 region = Rect2(0, 104, 128, 24)
+
+[sub_resource type="GDScript" id="GDScript_2epuu"]
+script/source = "extends Camera2D
+
+@export var shake_fade_intensity:float=2
+@export var shake_intensity:float=10
+var shake_strength:float=0
+func _ready():
+	await owner.ready
+	var player = owner.find_child(\"Player\",false)
+	
+	if player != null:
+		var player_health:HealthSystem = player.find_child(\"HealthSystem\",false)
+		if player_health != null:
+			player_health.took_damage.connect(on_player_took_damage)
+
+func on_player_took_damage(_damage_dealt):
+	shake()
+
+func _process(delta):
+	if shake_strength > 0.1:
+		shake_strength = lerpf(shake_strength,0,delta*shake_fade_intensity)
+		offset = Vector2(randf_range(-shake_strength,shake_strength),randf_range(-shake_strength,shake_strength))
+	else:
+		offset = Vector2.ZERO
+func shake():
+	shake_strength = shake_intensity
+"
 
 [node name="World" type="Node2D" groups=["world"]]
 
@@ -291,3 +319,9 @@ position = Vector2(154, -30)
 stream = ExtResource("14_0qvss")
 volume_db = -9.801
 autoplay = true
+
+[node name="Camera2D" type="Camera2D" parent="."]
+position = Vector2(90, 160)
+script = SubResource("GDScript_2epuu")
+shake_fade_intensity = 3.0
+shake_intensity = 5.0
