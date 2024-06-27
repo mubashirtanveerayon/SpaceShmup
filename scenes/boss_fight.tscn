@@ -1,9 +1,57 @@
-[gd_scene load_steps=6 format=3 uid="uid://f1mhk0w2r7hy"]
+[gd_scene load_steps=24 format=3 uid="uid://f1mhk0w2r7hy"]
 
 [ext_resource type="PackedScene" uid="uid://125xfvevxrgc" path="res://scenes/parallax_background.tscn" id="1_jlm3x"]
 [ext_resource type="PackedScene" uid="uid://donrkn5p10hg" path="res://scenes/player.tscn" id="2_s76cr"]
 [ext_resource type="PackedScene" uid="uid://bs3bxh8urlbaj" path="res://scenes/boundary.tscn" id="3_6lcmg"]
 [ext_resource type="PackedScene" uid="uid://p4ecmrutsvk8" path="res://scenes/boss_enemy.tscn" id="4_lkwcv"]
+[ext_resource type="PackedScene" uid="uid://dcv6r7cassn87" path="res://scenes/limited_spawner.tscn" id="5_pog1j"]
+[ext_resource type="PackedScene" uid="uid://colclun1i62f8" path="res://scenes/basic_enemy.tscn" id="6_pmapu"]
+[ext_resource type="PackedScene" uid="uid://chxhntyic1up" path="res://scenes/shooter_enemy.tscn" id="7_bh1wx"]
+[ext_resource type="PackedScene" uid="uid://cw3ufjy2t8d2p" path="res://scenes/bomber_ufo.tscn" id="8_2pski"]
+[ext_resource type="PackedScene" uid="uid://7n47pc0cdrlq" path="res://scenes/power_up/power_up_spawner.tscn" id="9_lgxn5"]
+[ext_resource type="PackedScene" uid="uid://dumlcwrfgejg8" path="res://scenes/power_up/invincible_power_up.tscn" id="10_rhd4b"]
+[ext_resource type="PackedScene" uid="uid://bb8b3ynurjoo3" path="res://scenes/power_up/health_power_up.tscn" id="11_mcx0q"]
+[ext_resource type="PackedScene" uid="uid://dx32wck4kgurq" path="res://scenes/power_up/double_laser_shooter_power_up.tscn" id="12_dqmaa"]
+[ext_resource type="PackedScene" uid="uid://bqkivxsjvwc1d" path="res://scenes/power_up/bullet_damage_upgrade_power_up.tscn" id="13_btfw1"]
+[ext_resource type="Theme" uid="uid://bllenujqgun7o" path="res://data/ui_theme.tres" id="14_fso7e"]
+[ext_resource type="Texture2D" uid="uid://dsrobotp5hokg" path="res://assets/pico8_invaders_sprites_LARGE(1).png" id="14_vkkwt"]
+[ext_resource type="AudioStream" uid="uid://b2c7xsmxb7tc7" path="res://assets/audio/2021-08-30_-_Boss_Time_-_www.FesliyanStudios.com.mp3" id="16_fxeev"]
+
+[sub_resource type="GDScript" id="GDScript_op0wo"]
+script/source = "extends Node2D
+
+var unique_id:int = 2
+
+signal game_pause_triggered
+
+func pause():
+	get_tree().paused=true
+	$AudioStreamPlayer.stop()
+	hide()
+	$ParallaxBackground.hide()
+	$HUD.hide()
+
+func resume():
+	get_tree().paused=false
+	$AudioStreamPlayer.play()
+	show()
+	$ParallaxBackground.show()
+	$HUD.show()
+
+func _process(delta):
+	if Input.is_action_pressed(\"ui_cancel\") and not get_tree().paused:
+		pause()
+		game_pause_triggered.emit(unique_id)
+
+func _on_stats_boss_enemy_dead():
+	for child in get_children(false):
+		if child is Spawner and \"EnemySpawner\" in child.name:
+			child.enabled = false
+	var temp_shake_intensity:int=$Camera2D.shake_intensity
+	$Camera2D.shake_intensity=10
+	$Camera2D.shake()
+	
+"
 
 [sub_resource type="GDScript" id="GDScript_gu1j3"]
 script/source = "extends Camera2D
@@ -33,7 +81,77 @@ func shake():
 	shake_strength = shake_intensity
 "
 
-[node name="BossFight" type="Node2D"]
+[sub_resource type="GDScript" id="GDScript_q8a75"]
+script/source = "extends Control
+var score:int = 0
+signal boss_enemy_dead
+var player_health:HealthSystem
+var boss_enemy_health:HealthSystem
+func _ready():
+	var world_node = get_tree().get_first_node_in_group(\"world\")
+	await world_node.ready
+	player_health=get_tree().get_first_node_in_group(\"player\").get_node(\"HealthSystem\")
+	if player_health != null:
+		$PlayerHealthProgressBar.max_value=player_health.health
+		player_health.health_changed.connect(on_player_health_changed)
+	
+	var boss_enemy = get_tree().get_first_node_in_group(\"boss\")
+	if boss_enemy!=null:
+		boss_enemy.enemy_dead.connect(on_enemy_dead)
+		boss_enemy_health = boss_enemy.find_child(\"HealthSystem\",false)
+		if boss_enemy_health != null:
+			boss_enemy_health.took_damage.connect(on_boss_enemy_took_damage)
+			$EnemyHealthProgressBar.max_value=boss_enemy_health.health
+			boss_enemy
+		for child in world_node.get_children(false):
+			if \"EnemySpawner\" in child.name and child.has_signal(\"spawned_objects\"):
+				child.spawned_objects.connect(on_enemy_spawn)
+		
+		
+	update_ui()
+
+
+func on_enemy_spawn(enemies:Array)->void:
+	for enemy in enemies:
+		enemy.enemy_dead.connect(on_enemy_dead)
+
+func on_enemy_dead(enemy_uid:int,death_point:int)->void:
+	score += death_point
+	if enemy_uid == 3:
+		boss_enemy_dead.emit()
+	update_ui()
+	
+	
+
+func on_player_health_changed(_health):
+	update_ui()
+func on_boss_enemy_took_damage(_damage_dealt):
+	update_ui()
+func update_ui()->void:
+	if player_health == null:
+		return
+
+	$Score.text = str(score)
+	
+	$PlayerHealthProgressBar.value=player_health.health
+	if boss_enemy_health != null:
+		$EnemyHealthProgressBar.value = boss_enemy_health.health
+"
+
+[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_dnhv7"]
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_hx28a"]
+bg_color = Color(0.345098, 1, 0.470588, 1)
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_tuqrd"]
+bg_color = Color(1, 0.14902, 0.113725, 1)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_40u1h"]
+atlas = ExtResource("14_vkkwt")
+region = Rect2(0, 104, 128, 24)
+
+[node name="BossFight" type="Node2D" groups=["world"]]
+script = SubResource("GDScript_op0wo")
 
 [node name="ParallaxBackground" parent="." instance=ExtResource("1_jlm3x")]
 
@@ -49,3 +167,108 @@ position = Vector2(91, 282)
 
 [node name="BossEnemy" parent="." instance=ExtResource("4_lkwcv")]
 position = Vector2(89, 43)
+
+[node name="LimitedBasicEnemySpawner" parent="." instance=ExtResource("5_pog1j")]
+max = 10
+add_as_owner_sibling = false
+object_scene = ExtResource("6_pmapu")
+spawn_interval = 5.0
+
+[node name="Marker2D" type="Marker2D" parent="LimitedBasicEnemySpawner"]
+position = Vector2(29, -92)
+
+[node name="Marker2D2" type="Marker2D" parent="LimitedBasicEnemySpawner"]
+position = Vector2(118, -97)
+
+[node name="LimitedShooterEnemySpawner" parent="." instance=ExtResource("5_pog1j")]
+add_as_owner_sibling = false
+object_scene = ExtResource("7_bh1wx")
+
+[node name="Marker2D" type="Marker2D" parent="LimitedShooterEnemySpawner"]
+position = Vector2(152, -128)
+
+[node name="Marker2D2" type="Marker2D" parent="LimitedShooterEnemySpawner"]
+position = Vector2(62, -131)
+
+[node name="LimitedBomberEnemySpawner" parent="." instance=ExtResource("5_pog1j")]
+max = 2
+add_as_owner_sibling = false
+object_scene = ExtResource("8_2pski")
+spawn_interval = 5.0
+
+[node name="Marker2D" type="Marker2D" parent="LimitedBomberEnemySpawner"]
+position = Vector2(33, -41)
+
+[node name="Marker2D4" type="Marker2D" parent="LimitedBomberEnemySpawner"]
+position = Vector2(142, -42)
+
+[node name="PowerUpSpawner" parent="." instance=ExtResource("9_lgxn5")]
+power_up_scenes = Array[PackedScene]([ExtResource("10_rhd4b"), ExtResource("11_mcx0q"), ExtResource("12_dqmaa"), ExtResource("13_btfw1")])
+spawn_interval_probability = 1.5
+
+[node name="Marker2D" type="Marker2D" parent="PowerUpSpawner"]
+position = Vector2(28, -30)
+
+[node name="Marker2D2" type="Marker2D" parent="PowerUpSpawner"]
+position = Vector2(91, -30)
+
+[node name="Marker2D3" type="Marker2D" parent="PowerUpSpawner"]
+position = Vector2(154, -30)
+
+[node name="HUD" type="CanvasLayer" parent="."]
+
+[node name="Stats" type="Control" parent="HUD"]
+layout_mode = 3
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+theme = ExtResource("14_fso7e")
+script = SubResource("GDScript_q8a75")
+
+[node name="PlayerHealthProgressBar" type="ProgressBar" parent="HUD/Stats"]
+layout_mode = 0
+offset_left = 7.0
+offset_top = 5.0
+offset_right = 47.0
+offset_bottom = 18.0
+theme_override_styles/background = SubResource("StyleBoxEmpty_dnhv7")
+theme_override_styles/fill = SubResource("StyleBoxFlat_hx28a")
+value = 50.0
+show_percentage = false
+
+[node name="EnemyHealthProgressBar" type="ProgressBar" parent="HUD/Stats"]
+layout_mode = 0
+offset_left = 50.0
+offset_top = 5.0
+offset_right = 129.0
+offset_bottom = 18.0
+theme_override_styles/background = SubResource("StyleBoxEmpty_dnhv7")
+theme_override_styles/fill = SubResource("StyleBoxFlat_tuqrd")
+value = 50.0
+show_percentage = false
+
+[node name="Score" type="Label" parent="HUD/Stats"]
+layout_mode = 0
+offset_left = 145.0
+offset_top = 3.0
+offset_right = 170.0
+offset_bottom = 20.0
+theme_override_font_sizes/font_size = 13
+text = "0
+"
+horizontal_alignment = 1
+
+[node name="TextureRect" type="TextureRect" parent="HUD/Stats"]
+layout_mode = 0
+offset_right = 180.0
+offset_bottom = 24.0
+texture = SubResource("AtlasTexture_40u1h")
+stretch_mode = 1
+
+[node name="AudioStreamPlayer" type="AudioStreamPlayer" parent="."]
+stream = ExtResource("16_fxeev")
+autoplay = true
+
+[connection signal="boss_enemy_dead" from="HUD/Stats" to="." method="_on_stats_boss_enemy_dead"]

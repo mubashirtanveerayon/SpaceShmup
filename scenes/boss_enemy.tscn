@@ -160,7 +160,7 @@ func _on_timer_timeout():
 	shoot_duration_over.emit()
 "
 
-[node name="BossEnemy" instance=ExtResource("1_bsmjj")]
+[node name="BossEnemy" groups=["boss"] instance=ExtResource("1_bsmjj")]
 collision_layer = 32
 script = SubResource("GDScript_mx323")
 unique_id = 3

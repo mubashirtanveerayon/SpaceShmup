@@ -1,0 +1,91 @@
+[gd_scene load_steps=5 format=3 uid="uid://c0wolsu3xpayq"]
+
+[ext_resource type="Theme" uid="uid://bllenujqgun7o" path="res://data/ui_theme.tres" id="1_s287j"]
+[ext_resource type="Script" path="res://scripts/ui/main_menu.gd" id="2_kmx3i"]
+[ext_resource type="PackedScene" uid="uid://125xfvevxrgc" path="res://scenes/parallax_background.tscn" id="2_wgt5s"]
+
+[sub_resource type="GDScript" id="GDScript_sr8wj"]
+script/source = "extends ParallaxBackground
+
+
+@export var speed_y:int=20
+
+
+func _process(delta:float)->void:
+
+
+	$ParallaxLayer.motion_offset.y += speed_y * delta
+"
+
+[node name="MainMenu" type="Control"]
+process_mode = 3
+layout_mode = 3
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+theme = ExtResource("1_s287j")
+script = ExtResource("2_kmx3i")
+
+[node name="MarginContainer" type="MarginContainer" parent="."]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+theme_override_constants/margin_left = 30
+theme_override_constants/margin_top = 30
+theme_override_constants/margin_right = 30
+theme_override_constants/margin_bottom = 30
+
+[node name="VBoxContainer" type="VBoxContainer" parent="MarginContainer"]
+layout_mode = 2
+alignment = 1
+
+[node name="Label" type="Label" parent="MarginContainer/VBoxContainer"]
+layout_mode = 2
+size_flags_vertical = 3
+text = "Space Shooter"
+horizontal_alignment = 1
+vertical_alignment = 1
+
+[node name="VBoxContainer" type="VBoxContainer" parent="MarginContainer/VBoxContainer"]
+layout_mode = 2
+size_flags_vertical = 10
+
+[node name="Level1Button" type="Button" parent="MarginContainer/VBoxContainer/VBoxContainer"]
+unique_name_in_owner = true
+layout_mode = 2
+focus_neighbor_top = NodePath("../QuitButton")
+focus_neighbor_bottom = NodePath("../Level2Button")
+focus_next = NodePath("../Level2Button")
+focus_previous = NodePath("../QuitButton")
+text = "Level 1"
+
+[node name="Level2Button" type="Button" parent="MarginContainer/VBoxContainer/VBoxContainer"]
+unique_name_in_owner = true
+layout_mode = 2
+focus_neighbor_top = NodePath("../Level1Button")
+focus_neighbor_bottom = NodePath("../QuitButton")
+focus_next = NodePath("../QuitButton")
+focus_previous = NodePath("../Level1Button")
+text = "Level 2"
+
+[node name="QuitButton" type="Button" parent="MarginContainer/VBoxContainer/VBoxContainer"]
+unique_name_in_owner = true
+layout_mode = 2
+focus_neighbor_top = NodePath("../Level2Button")
+focus_neighbor_bottom = NodePath("../Level1Button")
+focus_next = NodePath("../Level1Button")
+focus_previous = NodePath("../Level2Button")
+text = "Quit"
+
+[node name="ParallaxBackground" parent="." instance=ExtResource("2_wgt5s")]
+script = SubResource("GDScript_sr8wj")
+speed_y = 20
+
+[connection signal="button_down" from="MarginContainer/VBoxContainer/VBoxContainer/Level1Button" to="." method="_on_level_1_button_button_down"]
+[connection signal="button_down" from="MarginContainer/VBoxContainer/VBoxContainer/Level2Button" to="." method="_on_level_2_button_button_down"]
+[connection signal="button_down" from="MarginContainer/VBoxContainer/VBoxContainer/QuitButton" to="." method="_on_quit_button_button_down"]

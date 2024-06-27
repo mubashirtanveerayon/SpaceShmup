@@ -1,4 +1,5 @@
-res://scenes/boss_enemy.tscn
+res://scenes/ui/main_menu.tscn
 res://shader/flash.gdshader
 res://shader/boss_enemy.gdshader
 res://shader/bgremoval.gdshader
+res://scripts/ui/main_menu.gd

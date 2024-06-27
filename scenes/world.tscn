@@ -10,23 +10,37 @@
 [ext_resource type="PackedScene" uid="uid://cw3ufjy2t8d2p" path="res://scenes/bomber_ufo.tscn" id="7_ctqda"]
 [ext_resource type="FontFile" uid="uid://c45raxvnju0m3" path="res://assets/fonts/kenney_mini_square.ttf" id="8_3i6uo"]
 [ext_resource type="Script" path="res://scripts/ui/stats.gd" id="8_4qvps"]
+[ext_resource type="Theme" uid="uid://bllenujqgun7o" path="res://data/ui_theme.tres" id="8_whqfb"]
 [ext_resource type="PackedScene" uid="uid://7n47pc0cdrlq" path="res://scenes/power_up/power_up_spawner.tscn" id="10_37tgw"]
 [ext_resource type="PackedScene" uid="uid://bb8b3ynurjoo3" path="res://scenes/power_up/health_power_up.tscn" id="12_5qwh8"]
 [ext_resource type="PackedScene" uid="uid://dumlcwrfgejg8" path="res://scenes/power_up/invincible_power_up.tscn" id="13_3xtik"]
 [ext_resource type="PackedScene" uid="uid://dx32wck4kgurq" path="res://scenes/power_up/double_laser_shooter_power_up.tscn" id="13_b74pj"]
-[ext_resource type="AudioStream" uid="uid://d3pj65047a0tc" path="res://assets/audio/POL-final-sacrifice-short.wav" id="14_0qvss"]
 [ext_resource type="PackedScene" uid="uid://bqkivxsjvwc1d" path="res://scenes/power_up/bullet_damage_upgrade_power_up.tscn" id="15_quydv"]
-[ext_resource type="PackedScene" uid="uid://p4ecmrutsvk8" path="res://scenes/boss_enemy.tscn" id="16_kxosv"]
+[ext_resource type="AudioStream" uid="uid://i72i3dfec0e7" path="res://assets/audio/2019-12-11_-_Retro_Platforming_-_David_Fesliyan(1).mp3" id="17_pw23w"]
 
-[sub_resource type="GDScript" id="GDScript_i53uk"]
+[sub_resource type="GDScript" id="GDScript_ujv7y"]
 script/source = "extends Node2D
+var unique_id = 1
+signal game_pause_triggered
 
+func pause():
+	get_tree().paused=true
+	$AudioStreamPlayer.stop()
+	hide()
+	$ParallaxBackground.hide()
+	$HUD.hide()
 
-func _on_stats_boss_enemy_dead():
-	for child in get_children(false):
-		if child is Spawner and \"EnemySpawner\" in child.name:
-			child.enabled = false
-	
+func resume():
+	get_tree().paused=false
+	$AudioStreamPlayer.play()
+	show()
+	$ParallaxBackground.show()
+	$HUD.show()
+
+func _process(delta):
+	if Input.is_action_pressed(\"ui_cancel\") and not get_tree().paused:
+		pause()
+		game_pause_triggered.emit(unique_id)
 "
 
 [sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_vk5xc"]
@@ -67,57 +81,20 @@ func shake():
 "
 
 [node name="World" type="Node2D" groups=["world"]]
-script = SubResource("GDScript_i53uk")
-
-[node name="Player" parent="." instance=ExtResource("1_ys2o1")]
-position = Vector2(89, 284)
-wall_min_slide_angle = 0.261799
-
-[node name="Boundary" parent="." instance=ExtResource("2_t7ai7")]
+script = SubResource("GDScript_ujv7y")
 
 [node name="ParallaxBackground" parent="." instance=ExtResource("2_4bh2e")]
-
-[node name="LimitedBasicEnemySpawner" parent="." instance=ExtResource("4_5q2j5")]
-max = 10
-add_as_owner_sibling = false
-object_scene = ExtResource("2_mccnp")
-spawn_interval = 5.0
-
-[node name="Marker2D" type="Marker2D" parent="LimitedBasicEnemySpawner"]
-position = Vector2(29, -92)
-
-[node name="Marker2D2" type="Marker2D" parent="LimitedBasicEnemySpawner"]
-position = Vector2(118, -97)
-
-[node name="LimitedShooterEnemySpawner" parent="." instance=ExtResource("4_5q2j5")]
-add_as_owner_sibling = false
-object_scene = ExtResource("6_ll2sy")
-
-[node name="Marker2D" type="Marker2D" parent="LimitedShooterEnemySpawner"]
-position = Vector2(152, -128)
-
-[node name="Marker2D2" type="Marker2D" parent="LimitedShooterEnemySpawner"]
-position = Vector2(62, -131)
-
-[node name="LimitedBomberEnemySpawner" parent="." instance=ExtResource("4_5q2j5")]
-max = 2
-add_as_owner_sibling = false
-object_scene = ExtResource("7_ctqda")
-spawn_interval = 5.0
-
-[node name="Marker2D" type="Marker2D" parent="LimitedBomberEnemySpawner"]
-position = Vector2(33, -41)
-
-[node name="Marker2D4" type="Marker2D" parent="LimitedBomberEnemySpawner"]
-position = Vector2(142, -42)
 
 [node name="HUD" type="CanvasLayer" parent="."]
 
 [node name="Stats" type="Control" parent="HUD"]
 layout_mode = 3
-anchors_preset = 0
-offset_right = 40.0
-offset_bottom = 40.0
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+theme = ExtResource("8_whqfb")
 script = ExtResource("8_4qvps")
 
 [node name="ProgressBar" type="ProgressBar" parent="HUD/Stats"]
@@ -135,6 +112,7 @@ show_percentage = false
 anchors_preset = 0
 offset_right = 40.0
 offset_bottom = 40.0
+theme = ExtResource("8_whqfb")
 
 [node name="BasicEnemy" type="Sprite2D" parent="HUD/Stats/EnemiesKilledStats"]
 position = Vector2(58, 11)
@@ -187,8 +165,7 @@ offset_left = 145.0
 offset_top = 3.0
 offset_right = 170.0
 offset_bottom = 20.0
-theme_override_fonts/font = ExtResource("8_3i6uo")
-theme_override_font_sizes/font_size = 13
+theme_override_font_sizes/font_size = 14
 text = "0
 "
 horizontal_alignment = 1
@@ -199,6 +176,46 @@ offset_right = 180.0
 offset_bottom = 24.0
 texture = SubResource("AtlasTexture_et7ih")
 stretch_mode = 1
+
+[node name="Player" parent="." instance=ExtResource("1_ys2o1")]
+position = Vector2(89, 284)
+wall_min_slide_angle = 0.261799
+
+[node name="Boundary" parent="." instance=ExtResource("2_t7ai7")]
+
+[node name="LimitedBasicEnemySpawner" parent="." instance=ExtResource("4_5q2j5")]
+max = 10
+add_as_owner_sibling = false
+object_scene = ExtResource("2_mccnp")
+spawn_interval = 5.0
+
+[node name="Marker2D" type="Marker2D" parent="LimitedBasicEnemySpawner"]
+position = Vector2(29, -92)
+
+[node name="Marker2D2" type="Marker2D" parent="LimitedBasicEnemySpawner"]
+position = Vector2(118, -97)
+
+[node name="LimitedShooterEnemySpawner" parent="." instance=ExtResource("4_5q2j5")]
+add_as_owner_sibling = false
+object_scene = ExtResource("6_ll2sy")
+
+[node name="Marker2D" type="Marker2D" parent="LimitedShooterEnemySpawner"]
+position = Vector2(152, -128)
+
+[node name="Marker2D2" type="Marker2D" parent="LimitedShooterEnemySpawner"]
+position = Vector2(62, -131)
+
+[node name="LimitedBomberEnemySpawner" parent="." instance=ExtResource("4_5q2j5")]
+max = 2
+add_as_owner_sibling = false
+object_scene = ExtResource("7_ctqda")
+spawn_interval = 5.0
+
+[node name="Marker2D" type="Marker2D" parent="LimitedBomberEnemySpawner"]
+position = Vector2(33, -41)
+
+[node name="Marker2D4" type="Marker2D" parent="LimitedBomberEnemySpawner"]
+position = Vector2(142, -42)
 
 [node name="PowerUpSpawner" parent="." instance=ExtResource("10_37tgw")]
 power_up_scenes = Array[PackedScene]([ExtResource("13_3xtik"), ExtResource("12_5qwh8"), ExtResource("13_b74pj"), ExtResource("15_quydv")])
@@ -214,7 +231,7 @@ position = Vector2(91, -30)
 position = Vector2(154, -30)
 
 [node name="AudioStreamPlayer" type="AudioStreamPlayer" parent="."]
-stream = ExtResource("14_0qvss")
+stream = ExtResource("17_pw23w")
 volume_db = -9.801
 autoplay = true
 
@@ -223,8 +240,3 @@ position = Vector2(90, 160)
 script = SubResource("GDScript_2epuu")
 shake_fade_intensity = 3.0
 shake_intensity = 7.0
-
-[node name="BossEnemy" parent="." instance=ExtResource("16_kxosv")]
-position = Vector2(93, 69)
-
-[connection signal="boss_enemy_dead" from="HUD/Stats" to="." method="_on_stats_boss_enemy_dead"]
