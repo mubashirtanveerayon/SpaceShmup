@@ -1,0 +1,89 @@
+[gd_scene load_steps=3 format=3 uid="uid://125xfvevxrgc"]
+
+[ext_resource type="Script" path="res://scripts/ParallaxBackground.gd" id="1_n7cu7"]
+[ext_resource type="Texture2D" uid="uid://dsrobotp5hokg" path="res://assets/pico8_invaders_sprites_LARGE(1).png" id="2_u57ny"]
+
+[node name="ParallaxBackground" type="ParallaxBackground"]
+script = ExtResource("1_n7cu7")
+speed = Vector2(0.2, 10)
+
+[node name="CPUParticles2D" type="CPUParticles2D" parent="."]
+position = Vector2(61, -49)
+amount = 15
+lifetime = 3.0
+emission_shape = 3
+emission_rect_extents = Vector2(180, 1)
+direction = Vector2(0, 1)
+spread = 0.0
+gravity = Vector2(0, 0)
+initial_velocity_min = 150.0
+initial_velocity_max = 150.0
+
+[node name="ParallaxLayer" type="ParallaxLayer" parent="."]
+motion_mirroring = Vector2(180, 320)
+
+[node name="Sprite2D" type="Sprite2D" parent="ParallaxLayer"]
+position = Vector2(45, 46)
+texture = ExtResource("2_u57ny")
+region_enabled = true
+region_rect = Rect2(88, 0, 16, 16)
+
+[node name="Sprite2D2" type="Sprite2D" parent="ParallaxLayer"]
+position = Vector2(116, 22)
+texture = ExtResource("2_u57ny")
+region_enabled = true
+region_rect = Rect2(104, 0, 16, 16)
+
+[node name="Sprite2D3" type="Sprite2D" parent="ParallaxLayer"]
+position = Vector2(90, 96)
+texture = ExtResource("2_u57ny")
+region_enabled = true
+region_rect = Rect2(120, 0, 8, 8)
+
+[node name="Sprite2D4" type="Sprite2D" parent="ParallaxLayer"]
+position = Vector2(39, 174)
+texture = ExtResource("2_u57ny")
+region_enabled = true
+region_rect = Rect2(104, 0, 16, 16)
+
+[node name="Sprite2D5" type="Sprite2D" parent="ParallaxLayer"]
+position = Vector2(110, 194)
+texture = ExtResource("2_u57ny")
+region_enabled = true
+region_rect = Rect2(104, 0, 16, 16)
+
+[node name="Sprite2D6" type="Sprite2D" parent="ParallaxLayer"]
+position = Vector2(37, 256)
+texture = ExtResource("2_u57ny")
+region_enabled = true
+region_rect = Rect2(88, 16, 16, 8)
+
+[node name="Sprite2D8" type="Sprite2D" parent="ParallaxLayer"]
+position = Vector2(130, 50)
+texture = ExtResource("2_u57ny")
+region_enabled = true
+region_rect = Rect2(120, 0, 8, 8)
+
+[node name="Sprite2D9" type="Sprite2D" parent="ParallaxLayer"]
+position = Vector2(79, 128)
+texture = ExtResource("2_u57ny")
+region_enabled = true
+region_rect = Rect2(104, 0, 16, 16)
+
+[node name="Sprite2D10" type="Sprite2D" parent="ParallaxLayer"]
+position = Vector2(172, 164)
+texture = ExtResource("2_u57ny")
+region_enabled = true
+region_rect = Rect2(104, 0, 16, 16)
+
+[node name="Sprite2D11" type="Sprite2D" parent="ParallaxLayer"]
+position = Vector2(149, 254)
+texture = ExtResource("2_u57ny")
+region_enabled = true
+region_rect = Rect2(88, 16, 16, 8)
+
+[node name="Sprite2D7" type="Sprite2D" parent="ParallaxLayer"]
+position = Vector2(164, 116)
+texture = ExtResource("2_u57ny")
+region_enabled = true
+region_rect = Rect2(120, 8, 8, 8)

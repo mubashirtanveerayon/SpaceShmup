@@ -1,9 +1,10 @@
-[gd_scene load_steps=21 format=3 uid="uid://bop47ake2pexq"]
+[gd_scene load_steps=23 format=3 uid="uid://bop47ake2pexq"]
 
 [ext_resource type="PackedScene" uid="uid://donrkn5p10hg" path="res://scenes/player.tscn" id="1_ys2o1"]
+[ext_resource type="PackedScene" uid="uid://125xfvevxrgc" path="res://scenes/parallax_background.tscn" id="2_4bh2e"]
 [ext_resource type="PackedScene" uid="uid://colclun1i62f8" path="res://scenes/basic_enemy.tscn" id="2_mccnp"]
+[ext_resource type="PackedScene" uid="uid://bs3bxh8urlbaj" path="res://scenes/boundary.tscn" id="2_t7ai7"]
 [ext_resource type="PackedScene" uid="uid://dcv6r7cassn87" path="res://scenes/limited_spawner.tscn" id="4_5q2j5"]
-[ext_resource type="Script" path="res://scripts/ParallaxBackground.gd" id="4_c3osd"]
 [ext_resource type="Texture2D" uid="uid://dsrobotp5hokg" path="res://assets/pico8_invaders_sprites_LARGE(1).png" id="5_2st35"]
 [ext_resource type="PackedScene" uid="uid://chxhntyic1up" path="res://scenes/shooter_enemy.tscn" id="6_ll2sy"]
 [ext_resource type="PackedScene" uid="uid://cw3ufjy2t8d2p" path="res://scenes/bomber_ufo.tscn" id="7_ctqda"]
@@ -14,12 +15,19 @@
 [ext_resource type="PackedScene" uid="uid://dumlcwrfgejg8" path="res://scenes/power_up/invincible_power_up.tscn" id="13_3xtik"]
 [ext_resource type="PackedScene" uid="uid://dx32wck4kgurq" path="res://scenes/power_up/double_laser_shooter_power_up.tscn" id="13_b74pj"]
 [ext_resource type="AudioStream" uid="uid://d3pj65047a0tc" path="res://assets/audio/POL-final-sacrifice-short.wav" id="14_0qvss"]
+[ext_resource type="PackedScene" uid="uid://bqkivxsjvwc1d" path="res://scenes/power_up/bullet_damage_upgrade_power_up.tscn" id="15_quydv"]
+[ext_resource type="PackedScene" uid="uid://p4ecmrutsvk8" path="res://scenes/boss_enemy.tscn" id="16_kxosv"]
 
-[sub_resource type="RectangleShape2D" id="RectangleShape2D_kuxug"]
-size = Vector2(20, 320)
+[sub_resource type="GDScript" id="GDScript_i53uk"]
+script/source = "extends Node2D
 
-[sub_resource type="RectangleShape2D" id="RectangleShape2D_pe4uv"]
-size = Vector2(180, 20)
+
+func _on_stats_boss_enemy_dead():
+	for child in get_children(false):
+		if child is Spawner and \"EnemySpawner\" in child.name:
+			child.enabled = false
+	
+"
 
 [sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_vk5xc"]
 
@@ -59,125 +67,15 @@ func shake():
 "
 
 [node name="World" type="Node2D" groups=["world"]]
+script = SubResource("GDScript_i53uk")
 
 [node name="Player" parent="." instance=ExtResource("1_ys2o1")]
 position = Vector2(89, 284)
 wall_min_slide_angle = 0.261799
 
-[node name="Boundary" type="Node2D" parent="."]
+[node name="Boundary" parent="." instance=ExtResource("2_t7ai7")]
 
-[node name="Left" type="StaticBody2D" parent="Boundary"]
-position = Vector2(-10, 160)
-collision_layer = 16
-
-[node name="CollisionShape2D" type="CollisionShape2D" parent="Boundary/Left"]
-shape = SubResource("RectangleShape2D_kuxug")
-
-[node name="Right" type="StaticBody2D" parent="Boundary"]
-position = Vector2(190, 160)
-collision_layer = 16
-
-[node name="CollisionShape2D" type="CollisionShape2D" parent="Boundary/Right"]
-shape = SubResource("RectangleShape2D_kuxug")
-
-[node name="Top" type="StaticBody2D" parent="Boundary"]
-position = Vector2(90, -10)
-collision_layer = 16
-
-[node name="CollisionShape2D" type="CollisionShape2D" parent="Boundary/Top"]
-shape = SubResource("RectangleShape2D_pe4uv")
-
-[node name="Bottom" type="StaticBody2D" parent="Boundary"]
-position = Vector2(90, 330)
-collision_layer = 16
-
-[node name="CollisionShape2D" type="CollisionShape2D" parent="Boundary/Bottom"]
-shape = SubResource("RectangleShape2D_pe4uv")
-
-[node name="ParallaxBackground" type="ParallaxBackground" parent="."]
-script = ExtResource("4_c3osd")
-speed = Vector2(0.2, 10)
-
-[node name="CPUParticles2D" type="CPUParticles2D" parent="ParallaxBackground"]
-position = Vector2(61, -49)
-amount = 15
-lifetime = 3.0
-emission_shape = 3
-emission_rect_extents = Vector2(180, 1)
-direction = Vector2(0, 1)
-spread = 0.0
-gravity = Vector2(0, 0)
-initial_velocity_min = 150.0
-initial_velocity_max = 150.0
-
-[node name="ParallaxLayer" type="ParallaxLayer" parent="ParallaxBackground"]
-motion_mirroring = Vector2(180, 320)
-
-[node name="Sprite2D" type="Sprite2D" parent="ParallaxBackground/ParallaxLayer"]
-position = Vector2(45, 46)
-texture = ExtResource("5_2st35")
-region_enabled = true
-region_rect = Rect2(88, 0, 16, 16)
-
-[node name="Sprite2D2" type="Sprite2D" parent="ParallaxBackground/ParallaxLayer"]
-position = Vector2(116, 22)
-texture = ExtResource("5_2st35")
-region_enabled = true
-region_rect = Rect2(104, 0, 16, 16)
-
-[node name="Sprite2D3" type="Sprite2D" parent="ParallaxBackground/ParallaxLayer"]
-position = Vector2(90, 96)
-texture = ExtResource("5_2st35")
-region_enabled = true
-region_rect = Rect2(120, 0, 8, 8)
-
-[node name="Sprite2D4" type="Sprite2D" parent="ParallaxBackground/ParallaxLayer"]
-position = Vector2(39, 174)
-texture = ExtResource("5_2st35")
-region_enabled = true
-region_rect = Rect2(104, 0, 16, 16)
-
-[node name="Sprite2D5" type="Sprite2D" parent="ParallaxBackground/ParallaxLayer"]
-position = Vector2(110, 194)
-texture = ExtResource("5_2st35")
-region_enabled = true
-region_rect = Rect2(104, 0, 16, 16)
-
-[node name="Sprite2D6" type="Sprite2D" parent="ParallaxBackground/ParallaxLayer"]
-position = Vector2(37, 256)
-texture = ExtResource("5_2st35")
-region_enabled = true
-region_rect = Rect2(88, 16, 16, 8)
-
-[node name="Sprite2D8" type="Sprite2D" parent="ParallaxBackground/ParallaxLayer"]
-position = Vector2(130, 50)
-texture = ExtResource("5_2st35")
-region_enabled = true
-region_rect = Rect2(120, 0, 8, 8)
-
-[node name="Sprite2D9" type="Sprite2D" parent="ParallaxBackground/ParallaxLayer"]
-position = Vector2(79, 128)
-texture = ExtResource("5_2st35")
-region_enabled = true
-region_rect = Rect2(104, 0, 16, 16)
-
-[node name="Sprite2D10" type="Sprite2D" parent="ParallaxBackground/ParallaxLayer"]
-position = Vector2(172, 164)
-texture = ExtResource("5_2st35")
-region_enabled = true
-region_rect = Rect2(104, 0, 16, 16)
-
-[node name="Sprite2D11" type="Sprite2D" parent="ParallaxBackground/ParallaxLayer"]
-position = Vector2(149, 254)
-texture = ExtResource("5_2st35")
-region_enabled = true
-region_rect = Rect2(88, 16, 16, 8)
-
-[node name="Sprite2D7" type="Sprite2D" parent="ParallaxBackground/ParallaxLayer"]
-position = Vector2(164, 116)
-texture = ExtResource("5_2st35")
-region_enabled = true
-region_rect = Rect2(120, 8, 8, 8)
+[node name="ParallaxBackground" parent="." instance=ExtResource("2_4bh2e")]
 
 [node name="LimitedBasicEnemySpawner" parent="." instance=ExtResource("4_5q2j5")]
 max = 10
@@ -303,8 +201,8 @@ texture = SubResource("AtlasTexture_et7ih")
 stretch_mode = 1
 
 [node name="PowerUpSpawner" parent="." instance=ExtResource("10_37tgw")]
-power_up_scenes = Array[PackedScene]([ExtResource("13_3xtik"), ExtResource("12_5qwh8"), ExtResource("13_b74pj")])
-spawn_interval_probability = 2.5
+power_up_scenes = Array[PackedScene]([ExtResource("13_3xtik"), ExtResource("12_5qwh8"), ExtResource("13_b74pj"), ExtResource("15_quydv")])
+spawn_interval_probability = 1.5
 
 [node name="Marker2D" type="Marker2D" parent="PowerUpSpawner"]
 position = Vector2(28, -30)
@@ -324,4 +222,9 @@ autoplay = true
 position = Vector2(90, 160)
 script = SubResource("GDScript_2epuu")
 shake_fade_intensity = 3.0
-shake_intensity = 5.0
+shake_intensity = 7.0
+
+[node name="BossEnemy" parent="." instance=ExtResource("16_kxosv")]
+position = Vector2(93, 69)
+
+[connection signal="boss_enemy_dead" from="HUD/Stats" to="." method="_on_stats_boss_enemy_dead"]

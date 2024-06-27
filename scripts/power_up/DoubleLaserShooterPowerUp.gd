@@ -1,5 +1,5 @@
 extends PowerUp
-var double_laser_shooter_scene:PackedScene = preload("res://scenes/double_laser_shooter.tscn")
+
 @export var double_laser_power_up_duration:float=10
 func apply(player:CharacterBody2D):
 	

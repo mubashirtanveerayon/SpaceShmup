@@ -1,4 +1,5 @@
 extends Node2D
+class_name Spawner
 
 signal spawn_interval_changed
 signal spawned_objects(objects:Array[Node2D])

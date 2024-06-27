@@ -22,7 +22,7 @@ scale = Vector2(0.4, 0.4)
 [node name="Sprite2D" type="Sprite2D" parent="." index="2"]
 texture = ExtResource("2_eke4y")
 region_enabled = true
-region_rect = Rect2(8, 32, 8, 8)
+region_rect = Rect2(16, 32, 8, 8)
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="." index="3"]
 shape = SubResource("RectangleShape2D_qgllf")

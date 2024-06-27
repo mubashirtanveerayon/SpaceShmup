@@ -10,7 +10,8 @@ func _physics_process(delta):
 	global_position.y += speed * delta
 
 func finish():
-	await $AudioStreamPlayer2D.finished
+	if $AudioStreamPlayer2D.playing:
+		await $AudioStreamPlayer2D.finished
 	queue_free()
 
 func on_body_entered(body)->void:

@@ -1,0 +1,11 @@
+[gd_scene load_steps=3 format=3 uid="uid://b513txaplde16"]
+
+[ext_resource type="PackedScene" uid="uid://bvjymhfn4e0n6" path="res://scenes/enemy_projectile.tscn" id="1_vkren"]
+[ext_resource type="Script" path="res://scripts/ProjectileMovementComponent.gd" id="2_c103l"]
+
+[node name="BossEnemyProjectile" instance=ExtResource("1_vkren")]
+damage = 100
+
+[node name="ProjectileMovementComponent" parent="." index="0"]
+script = ExtResource("2_c103l")
+max_speed = 200

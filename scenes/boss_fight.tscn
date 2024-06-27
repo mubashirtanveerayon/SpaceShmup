@@ -1,0 +1,51 @@
+[gd_scene load_steps=6 format=3 uid="uid://f1mhk0w2r7hy"]
+
+[ext_resource type="PackedScene" uid="uid://125xfvevxrgc" path="res://scenes/parallax_background.tscn" id="1_jlm3x"]
+[ext_resource type="PackedScene" uid="uid://donrkn5p10hg" path="res://scenes/player.tscn" id="2_s76cr"]
+[ext_resource type="PackedScene" uid="uid://bs3bxh8urlbaj" path="res://scenes/boundary.tscn" id="3_6lcmg"]
+[ext_resource type="PackedScene" uid="uid://p4ecmrutsvk8" path="res://scenes/boss_enemy.tscn" id="4_lkwcv"]
+
+[sub_resource type="GDScript" id="GDScript_gu1j3"]
+script/source = "extends Camera2D
+
+@export var shake_fade_intensity:float=2
+@export var shake_intensity:float=10
+var shake_strength:float=0
+func _ready():
+	await owner.ready
+	var player = owner.find_child(\"Player\",false)
+	
+	if player != null:
+		var player_health:HealthSystem = player.find_child(\"HealthSystem\",false)
+		if player_health != null:
+			player_health.took_damage.connect(on_player_took_damage)
+
+func on_player_took_damage(_damage_dealt):
+	shake()
+
+func _process(delta):
+	if shake_strength > 0.1:
+		shake_strength = lerpf(shake_strength,0,delta*shake_fade_intensity)
+		offset = Vector2(randf_range(-shake_strength,shake_strength),randf_range(-shake_strength,shake_strength))
+	else:
+		offset = Vector2.ZERO
+func shake():
+	shake_strength = shake_intensity
+"
+
+[node name="BossFight" type="Node2D"]
+
+[node name="ParallaxBackground" parent="." instance=ExtResource("1_jlm3x")]
+
+[node name="Camera2D" type="Camera2D" parent="."]
+position = Vector2(90, 160)
+script = SubResource("GDScript_gu1j3")
+shake_intensity = 5.0
+
+[node name="Player" parent="." instance=ExtResource("2_s76cr")]
+position = Vector2(91, 282)
+
+[node name="Boundary" parent="." instance=ExtResource("3_6lcmg")]
+
+[node name="BossEnemy" parent="." instance=ExtResource("4_lkwcv")]
+position = Vector2(89, 43)

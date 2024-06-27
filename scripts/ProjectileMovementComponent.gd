@@ -1,5 +1,6 @@
 extends Node2D
 
+class_name ProjectileMovementComponent
 
 var velocity := Vector2.ZERO
 

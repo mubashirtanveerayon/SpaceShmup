@@ -1,0 +1,248 @@
+[gd_scene load_steps=12 format=3 uid="uid://p4ecmrutsvk8"]
+
+[ext_resource type="PackedScene" uid="uid://opltjpyr02rd" path="res://scenes/enemy.tscn" id="1_bsmjj"]
+[ext_resource type="Shader" path="res://shader/boss_enemy.gdshader" id="2_c2y66"]
+[ext_resource type="Texture2D" uid="uid://dsrobotp5hokg" path="res://assets/pico8_invaders_sprites_LARGE(1).png" id="2_vnuhq"]
+[ext_resource type="PackedScene" uid="uid://cb7wbxbc328gn" path="res://scenes/spawner.tscn" id="4_unc2u"]
+[ext_resource type="Script" path="res://scripts/boss_enemy_projectile_shooter.gd" id="5_emgl7"]
+[ext_resource type="PackedScene" uid="uid://b513txaplde16" path="res://scenes/boss_enemy_projectile.tscn" id="6_yqm83"]
+
+[sub_resource type="GDScript" id="GDScript_mx323"]
+script/source = "extends \"res://scripts/enemy.gd\"
+
+
+func _on_health_system_took_damage(damage_dealt):
+	$Visual/Sprite2D.material.set_shader_parameter(\"flash\",true)
+	await get_tree().create_timer(0.1).timeout
+	$Visual/Sprite2D.material.set_shader_parameter(\"flash\",false)
+"
+
+[sub_resource type="ShaderMaterial" id="ShaderMaterial_x7h7d"]
+shader = ExtResource("2_c2y66")
+shader_parameter/redEye = false
+shader_parameter/flash = false
+
+[sub_resource type="GDScript" id="GDScript_8xbqx"]
+script/source = "extends StateMachine
+
+func _process(delta):
+	if current_state != null:
+		#print(current_state.name)
+		pass
+
+func _on_movement_state_movement_stopped():
+	change_state($ShootState)
+
+
+func _on_shoot_state_shoot_duration_over():
+	change_state($MovementState)
+"
+
+[sub_resource type="GDScript" id="GDScript_bh0y3"]
+script/source = "extends State
+
+signal movement_duration_changed
+signal movement_stopped
+@export var movement_duration:float=1:
+	set(value):
+		movement_duration=value
+		movement_duration_changed.emit()
+		
+var object_movement_component:MovementComponent=null
+@onready var screen_size:Vector2=get_viewport_rect().size
+
+var moving:bool=false
+var ray_casts:Array[RayCast2D]
+
+func _ready():
+	super._ready()
+
+	for child in get_children(false):
+		if child is RayCast2D:
+			ray_casts.append(child)
+	movement_duration_changed.connect(on_movement_duration_changed)
+	$Timer.wait_time = movement_duration
+	
+func on_movement_duration_changed():
+	$Timer.wait_time=movement_duration
+			
+func _physics_process(delta):
+	if not moving:
+		return
+	for ray_cast in ray_casts:
+		if ray_cast.is_colliding():
+			move()
+
+
+	
+func enter():
+	
+	if object_movement_component == null:
+		for child in object.get_children():
+			if child is MovementComponent:
+				object_movement_component=child
+				break
+
+	super.enter()
+	$Timer.start()
+	
+	move()
+	moving = true
+
+func move():
+	
+	if object_movement_component == null:
+		return
+	if $Up.is_colliding():
+		object_movement_component.normalized_dir.y=randi_range(0,1)
+	elif $Down.is_colliding():
+		object_movement_component.normalized_dir.y = randi_range(-1,0)
+	else:
+		object_movement_component.normalized_dir.y = randi_range(-1,1)
+	
+	if $Left.is_colliding():
+		object_movement_component.normalized_dir.x = randi_range(0,1)
+	elif $Right.is_colliding():
+		object_movement_component.normalized_dir.x = randi_range(-1,0)
+	else:
+		object_movement_component.normalized_dir.x = randi_range(-1,1)
+
+func stop_movement():
+	moving = false
+	object_movement_component.normalized_dir=Vector2.ZERO
+	movement_stopped.emit()
+
+
+
+func _on_timer_timeout():
+	stop_movement()
+"
+
+[sub_resource type="GDScript" id="GDScript_cdx67"]
+script/source = "extends State
+
+var projectile_spawner_array:Array[Spawner]
+var sprite_node:Sprite2D
+
+signal shoot_duration_over
+
+@export var shoot_duration:float=1
+
+
+func enter():
+	super.enter()
+	if projectile_spawner_array.is_empty():
+		for child in object.get_children():
+			if child is Spawner and \"Projectile\" in child.name:
+				projectile_spawner_array.append(child)
+	if sprite_node == null:
+		for child in object.get_children():
+			if child is Node2D and \"Visual\" in child.name:
+				sprite_node = child.find_child(\"Sprite2D\",false)
+				break
+	else:
+		sprite_node.material.set_shader_parameter(\"redEye\",true)
+	for projectile_spawner in projectile_spawner_array:
+		projectile_spawner.enabled=true
+		projectile_spawner.spread = randi_range(0,180)
+	$Timer.wait_time = shoot_duration
+	$Timer.start()
+	
+func exit():
+	super.exit()
+	if sprite_node != null:
+		sprite_node.material.set_shader_parameter(\"redEye\",false)
+	for projectile_spawner in projectile_spawner_array:
+		projectile_spawner.enabled=false
+
+
+func _on_timer_timeout():
+	shoot_duration_over.emit()
+"
+
+[node name="BossEnemy" instance=ExtResource("1_bsmjj")]
+collision_layer = 32
+script = SubResource("GDScript_mx323")
+unique_id = 3
+death_point = 1000
+
+[node name="HealthSystem" parent="." index="0"]
+collision_layer = 32
+max_health = 100000
+health = 50000
+damage = 800
+
+[node name="CollisionPolygon2D" type="CollisionPolygon2D" parent="HealthSystem" index="0"]
+visible = false
+polygon = PackedVector2Array(-15, -11, 0, -10, 15, -11, 15, 6, 11, 10, 5, 5, 4, 12, -4, 12, -5, 6, -12, 10, -15, 7)
+
+[node name="MovementComponent" parent="." index="1"]
+acceleration = 100
+max_speed = 50
+friction = 200
+
+[node name="Sprite2D" type="Sprite2D" parent="Visual" index="0"]
+material = SubResource("ShaderMaterial_x7h7d")
+scale = Vector2(2, 2)
+texture = ExtResource("2_vnuhq")
+region_enabled = true
+region_rect = Rect2(40, 40, 32, 24)
+
+[node name="Explosion" parent="." index="3"]
+explosion_type = 2
+
+[node name="CollisionPolygon2D" type="CollisionPolygon2D" parent="." index="4"]
+visible = false
+polygon = PackedVector2Array(-15, -11, 0, -10, 15, -11, 15, 6, 11, 10, 5, 5, 4, 12, -4, 12, -5, 6, -12, 10, -15, 7)
+
+[node name="EnemyProjectileSpawner" parent="." index="5" instance=ExtResource("4_unc2u")]
+script = ExtResource("5_emgl7")
+spread = 180
+step = 12
+interval = 0.3
+enabled = false
+object_scene = ExtResource("6_yqm83")
+spawn_interval = 2.0
+
+[node name="Marker2D" type="Marker2D" parent="EnemyProjectileSpawner" index="1"]
+position = Vector2(0, 25)
+
+[node name="StateMachine" type="Node2D" parent="." index="6" node_paths=PackedStringArray("initial_state", "object")]
+script = SubResource("GDScript_8xbqx")
+initial_state = NodePath("ShootState")
+object = NodePath("..")
+
+[node name="MovementState" type="Node2D" parent="StateMachine" index="0"]
+script = SubResource("GDScript_bh0y3")
+
+[node name="Right" type="RayCast2D" parent="StateMachine/MovementState" index="0"]
+target_position = Vector2(68, 0)
+collision_mask = 16
+
+[node name="Up" type="RayCast2D" parent="StateMachine/MovementState" index="1"]
+target_position = Vector2(0, -39)
+collision_mask = 16
+
+[node name="Left" type="RayCast2D" parent="StateMachine/MovementState" index="2"]
+target_position = Vector2(-59, 0)
+collision_mask = 16
+
+[node name="Down" type="RayCast2D" parent="StateMachine/MovementState" index="3"]
+target_position = Vector2(0, 209)
+collision_mask = 16
+
+[node name="Timer" type="Timer" parent="StateMachine/MovementState" index="4"]
+one_shot = true
+
+[node name="ShootState" type="Node2D" parent="StateMachine" index="1"]
+script = SubResource("GDScript_cdx67")
+shoot_duration = 2.0
+
+[node name="Timer" type="Timer" parent="StateMachine/ShootState" index="0"]
+one_shot = true
+
+[connection signal="took_damage" from="HealthSystem" to="." method="_on_health_system_took_damage"]
+[connection signal="movement_stopped" from="StateMachine/MovementState" to="StateMachine" method="_on_movement_state_movement_stopped"]
+[connection signal="timeout" from="StateMachine/MovementState/Timer" to="StateMachine/MovementState" method="_on_timer_timeout"]
+[connection signal="shoot_duration_over" from="StateMachine/ShootState" to="StateMachine" method="_on_shoot_state_shoot_duration_over"]
+[connection signal="timeout" from="StateMachine/ShootState/Timer" to="StateMachine/ShootState" method="_on_timer_timeout"]

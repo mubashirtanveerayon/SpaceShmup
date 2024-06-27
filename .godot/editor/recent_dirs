@@ -1,12 +1,12 @@
 E:/my games/SpaceShmup_final/dist
 E:/my games/SpaceShmup_final/dist/android
-res://assets
 res://scenes/power_up
 res://scripts/power_up
+res://assets
 res://scenes
-res://scripts/ui
-res://assets/fonts
 res://scripts
 res://shader
+res://scripts/ui
+res://assets/fonts
 res://test
 res://data
