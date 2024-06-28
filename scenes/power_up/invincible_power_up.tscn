@@ -4,42 +4,43 @@
 [ext_resource type="Script" path="res://scripts/power_up/invincible_power_up.gd" id="2_diyg5"]
 [ext_resource type="Texture2D" uid="uid://dsrobotp5hokg" path="res://assets/pico8_invaders_sprites_LARGE(1).png" id="2_i5kr2"]
 
-[sub_resource type="AtlasTexture" id="AtlasTexture_wt638"]
+[sub_resource type="AtlasTexture" id="AtlasTexture_veqnk"]
 atlas = ExtResource("2_i5kr2")
 region = Rect2(24, 48, 8, 8)
 
-[sub_resource type="SpriteFrames" id="SpriteFrames_ttps1"]
+[sub_resource type="SpriteFrames" id="SpriteFrames_id7qu"]
 animations = [{
 "frames": [{
 "duration": 1.0,
-"texture": SubResource("AtlasTexture_wt638")
+"texture": SubResource("AtlasTexture_veqnk")
 }],
-"loop": true,
+"loop": false,
 "name": &"default",
 "speed": 5.0
 }]
 
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_f5kec"]
-size = Vector2(8, 8)
+size = Vector2(7.95325, 8.032)
 
 [node name="InvinciblePowerUp" instance=ExtResource("1_4ckw8")]
 script = ExtResource("2_diyg5")
 invincible_duration = 3.0
 
-[node name="AnimatedSprite2D" parent="." index="1"]
-sprite_frames = SubResource("SpriteFrames_ttps1")
-autoplay = "default"
-
-[node name="VisibleOnScreenNotifier2D" parent="." index="2"]
+[node name="VisibleOnScreenNotifier2D" parent="." index="1"]
 position = Vector2(2.38419e-07, 2.38419e-07)
 scale = Vector2(0.4, 0.4)
 
+[node name="AnimatedSprite2D" parent="." index="2"]
+sprite_frames = SubResource("SpriteFrames_id7qu")
+autoplay = "default"
+
 [node name="CollisionShape2D" type="CollisionShape2D" parent="." index="3"]
+position = Vector2(0.00993109, -0.036496)
 shape = SubResource("RectangleShape2D_f5kec")
 
 [node name="Sprite2D" type="Sprite2D" parent="." index="4"]
 visible = false
-scale = Vector2(1.5, 1.5)
+scale = Vector2(1.2, 1.2)
 texture = ExtResource("2_i5kr2")
 region_enabled = true
-region_rect = Rect2(36, 68, 24, 24)
+region_rect = Rect2(32, 64, 32, 32)

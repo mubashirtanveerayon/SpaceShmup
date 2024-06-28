@@ -1,4 +1,4 @@
-[gd_scene load_steps=23 format=3 uid="uid://bop47ake2pexq"]
+[gd_scene load_steps=24 format=3 uid="uid://bop47ake2pexq"]
 
 [ext_resource type="PackedScene" uid="uid://donrkn5p10hg" path="res://scenes/player.tscn" id="1_ys2o1"]
 [ext_resource type="PackedScene" uid="uid://125xfvevxrgc" path="res://scenes/parallax_background.tscn" id="2_4bh2e"]
@@ -16,6 +16,7 @@
 [ext_resource type="PackedScene" uid="uid://dumlcwrfgejg8" path="res://scenes/power_up/invincible_power_up.tscn" id="13_3xtik"]
 [ext_resource type="PackedScene" uid="uid://dx32wck4kgurq" path="res://scenes/power_up/double_laser_shooter_power_up.tscn" id="13_b74pj"]
 [ext_resource type="PackedScene" uid="uid://bqkivxsjvwc1d" path="res://scenes/power_up/bullet_damage_upgrade_power_up.tscn" id="15_quydv"]
+[ext_resource type="PackedScene" uid="uid://c5tueres11aun" path="res://scenes/power_up/player_bullet_scale_power_up.tscn" id="17_luotf"]
 [ext_resource type="AudioStream" uid="uid://i72i3dfec0e7" path="res://assets/audio/2019-12-11_-_Retro_Platforming_-_David_Fesliyan(1).mp3" id="17_pw23w"]
 
 [sub_resource type="GDScript" id="GDScript_ujv7y"]
@@ -161,10 +162,10 @@ text = "11"
 
 [node name="Score" type="Label" parent="HUD/Stats"]
 layout_mode = 0
-offset_left = 145.0
+offset_left = 139.0
 offset_top = 3.0
-offset_right = 170.0
-offset_bottom = 20.0
+offset_right = 164.0
+offset_bottom = 21.0
 theme_override_font_sizes/font_size = 14
 text = "0
 "
@@ -187,7 +188,7 @@ wall_min_slide_angle = 0.261799
 max = 10
 add_as_owner_sibling = false
 object_scene = ExtResource("2_mccnp")
-spawn_interval = 5.0
+spawn_interval = 2.0
 
 [node name="Marker2D" type="Marker2D" parent="LimitedBasicEnemySpawner"]
 position = Vector2(29, -92)
@@ -218,8 +219,7 @@ position = Vector2(33, -41)
 position = Vector2(142, -42)
 
 [node name="PowerUpSpawner" parent="." instance=ExtResource("10_37tgw")]
-power_up_scenes = Array[PackedScene]([ExtResource("13_3xtik"), ExtResource("12_5qwh8"), ExtResource("13_b74pj"), ExtResource("15_quydv")])
-spawn_interval_probability = 1.5
+power_up_scenes = Array[PackedScene]([ExtResource("15_quydv"), ExtResource("13_b74pj"), ExtResource("12_5qwh8"), ExtResource("13_3xtik"), ExtResource("17_luotf")])
 
 [node name="Marker2D" type="Marker2D" parent="PowerUpSpawner"]
 position = Vector2(28, -30)

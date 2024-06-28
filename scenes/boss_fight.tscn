@@ -1,4 +1,4 @@
-[gd_scene load_steps=24 format=3 uid="uid://f1mhk0w2r7hy"]
+[gd_scene load_steps=25 format=3 uid="uid://f1mhk0w2r7hy"]
 
 [ext_resource type="PackedScene" uid="uid://125xfvevxrgc" path="res://scenes/parallax_background.tscn" id="1_jlm3x"]
 [ext_resource type="PackedScene" uid="uid://donrkn5p10hg" path="res://scenes/player.tscn" id="2_s76cr"]
@@ -15,6 +15,7 @@
 [ext_resource type="PackedScene" uid="uid://bqkivxsjvwc1d" path="res://scenes/power_up/bullet_damage_upgrade_power_up.tscn" id="13_btfw1"]
 [ext_resource type="Theme" uid="uid://bllenujqgun7o" path="res://data/ui_theme.tres" id="14_fso7e"]
 [ext_resource type="Texture2D" uid="uid://dsrobotp5hokg" path="res://assets/pico8_invaders_sprites_LARGE(1).png" id="14_vkkwt"]
+[ext_resource type="PackedScene" uid="uid://c5tueres11aun" path="res://scenes/power_up/player_bullet_scale_power_up.tscn" id="14_wbvb7"]
 [ext_resource type="AudioStream" uid="uid://b2c7xsmxb7tc7" path="res://assets/audio/2021-08-30_-_Boss_Time_-_www.FesliyanStudios.com.mp3" id="16_fxeev"]
 
 [sub_resource type="GDScript" id="GDScript_op0wo"]
@@ -169,10 +170,10 @@ position = Vector2(91, 282)
 position = Vector2(89, 43)
 
 [node name="LimitedBasicEnemySpawner" parent="." instance=ExtResource("5_pog1j")]
-max = 10
+max = 8
 add_as_owner_sibling = false
 object_scene = ExtResource("6_pmapu")
-spawn_interval = 5.0
+spawn_interval = 3.0
 
 [node name="Marker2D" type="Marker2D" parent="LimitedBasicEnemySpawner"]
 position = Vector2(29, -92)
@@ -181,8 +182,10 @@ position = Vector2(29, -92)
 position = Vector2(118, -97)
 
 [node name="LimitedShooterEnemySpawner" parent="." instance=ExtResource("5_pog1j")]
+max = 4
 add_as_owner_sibling = false
 object_scene = ExtResource("7_bh1wx")
+spawn_interval = 5.0
 
 [node name="Marker2D" type="Marker2D" parent="LimitedShooterEnemySpawner"]
 position = Vector2(152, -128)
@@ -194,7 +197,7 @@ position = Vector2(62, -131)
 max = 2
 add_as_owner_sibling = false
 object_scene = ExtResource("8_2pski")
-spawn_interval = 5.0
+spawn_interval = 7.0
 
 [node name="Marker2D" type="Marker2D" parent="LimitedBomberEnemySpawner"]
 position = Vector2(33, -41)
@@ -203,8 +206,8 @@ position = Vector2(33, -41)
 position = Vector2(142, -42)
 
 [node name="PowerUpSpawner" parent="." instance=ExtResource("9_lgxn5")]
-power_up_scenes = Array[PackedScene]([ExtResource("10_rhd4b"), ExtResource("11_mcx0q"), ExtResource("12_dqmaa"), ExtResource("13_btfw1")])
-spawn_interval_probability = 1.5
+power_up_scenes = Array[PackedScene]([ExtResource("10_rhd4b"), ExtResource("11_mcx0q"), ExtResource("12_dqmaa"), ExtResource("13_btfw1"), ExtResource("14_wbvb7")])
+spawn_interval_probability = 1.2
 
 [node name="Marker2D" type="Marker2D" parent="PowerUpSpawner"]
 position = Vector2(28, -30)
@@ -251,9 +254,9 @@ show_percentage = false
 
 [node name="Score" type="Label" parent="HUD/Stats"]
 layout_mode = 0
-offset_left = 145.0
+offset_left = 138.0
 offset_top = 3.0
-offset_right = 170.0
+offset_right = 163.0
 offset_bottom = 20.0
 theme_override_font_sizes/font_size = 13
 text = "0

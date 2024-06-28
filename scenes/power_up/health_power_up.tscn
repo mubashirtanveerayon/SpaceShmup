@@ -1,39 +1,135 @@
-[gd_scene load_steps=7 format=3 uid="uid://bb8b3ynurjoo3"]
+[gd_scene load_steps=11 format=3 uid="uid://bb8b3ynurjoo3"]
 
 [ext_resource type="PackedScene" uid="uid://bi6700oninjo3" path="res://scenes/power_up.tscn" id="1_l71e4"]
 [ext_resource type="Script" path="res://scripts/power_up/HealthPowerUp.gd" id="2_82plr"]
 [ext_resource type="Texture2D" uid="uid://dsrobotp5hokg" path="res://assets/pico8_invaders_sprites_LARGE(1).png" id="3_sgk0m"]
+[ext_resource type="FontFile" uid="uid://c45raxvnju0m3" path="res://assets/fonts/kenney_mini_square.ttf" id="4_a1crc"]
 
-[sub_resource type="AtlasTexture" id="AtlasTexture_hq3s8"]
+[sub_resource type="AtlasTexture" id="AtlasTexture_niikt"]
 atlas = ExtResource("3_sgk0m")
 region = Rect2(32, 56, 8, 8)
 
-[sub_resource type="SpriteFrames" id="SpriteFrames_kcnn8"]
+[sub_resource type="SpriteFrames" id="SpriteFrames_vrmxq"]
 animations = [{
 "frames": [{
 "duration": 1.0,
-"texture": SubResource("AtlasTexture_hq3s8")
+"texture": SubResource("AtlasTexture_niikt")
 }],
-"loop": false,
+"loop": true,
 "name": &"default",
 "speed": 5.0
 }]
 
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_7o3m4"]
-size = Vector2(8, 7)
+size = Vector2(7.95325, 7.12643)
+
+[sub_resource type="Animation" id="Animation_yu5q4"]
+length = 0.001
+tracks/0/type = "value"
+tracks/0/imported = false
+tracks/0/enabled = true
+tracks/0/path = NodePath("Label:visible")
+tracks/0/interp = 1
+tracks/0/loop_wrap = true
+tracks/0/keys = {
+"times": PackedFloat32Array(0),
+"transitions": PackedFloat32Array(1),
+"update": 1,
+"values": [true]
+}
+tracks/1/type = "value"
+tracks/1/imported = false
+tracks/1/enabled = true
+tracks/1/path = NodePath(".:scale")
+tracks/1/interp = 1
+tracks/1/loop_wrap = true
+tracks/1/keys = {
+"times": PackedFloat32Array(0),
+"transitions": PackedFloat32Array(1),
+"update": 0,
+"values": [Vector2(1, 1)]
+}
+
+[sub_resource type="Animation" id="Animation_nci4m"]
+resource_name = "health_upgrade"
+length = 0.4
+tracks/0/type = "value"
+tracks/0/imported = false
+tracks/0/enabled = true
+tracks/0/path = NodePath("Label:visible")
+tracks/0/interp = 1
+tracks/0/loop_wrap = true
+tracks/0/keys = {
+"times": PackedFloat32Array(0),
+"transitions": PackedFloat32Array(1),
+"update": 1,
+"values": [true]
+}
+tracks/1/type = "value"
+tracks/1/imported = false
+tracks/1/enabled = true
+tracks/1/path = NodePath(".:scale")
+tracks/1/interp = 1
+tracks/1/loop_wrap = true
+tracks/1/keys = {
+"times": PackedFloat32Array(0.1, 0.4),
+"transitions": PackedFloat32Array(1, 1),
+"update": 0,
+"values": [Vector2(1, 1), Vector2(0.4, 0.4)]
+}
+tracks/2/type = "method"
+tracks/2/imported = false
+tracks/2/enabled = true
+tracks/2/path = NodePath(".")
+tracks/2/interp = 1
+tracks/2/loop_wrap = true
+tracks/2/keys = {
+"times": PackedFloat32Array(0.1),
+"transitions": PackedFloat32Array(1),
+"values": [{
+"args": [],
+"method": &"move_toward_health_bar"
+}]
+}
+
+[sub_resource type="AnimationLibrary" id="AnimationLibrary_infu6"]
+_data = {
+"RESET": SubResource("Animation_yu5q4"),
+"health_upgrade": SubResource("Animation_nci4m")
+}
 
 [node name="HealthPowerUp" instance=ExtResource("1_l71e4")]
 script = ExtResource("2_82plr")
 health_bonus = 200
 
-[node name="AnimatedSprite2D" parent="." index="1"]
-sprite_frames = SubResource("SpriteFrames_kcnn8")
+[node name="VisibleOnScreenNotifier2D" parent="." index="1"]
+position = Vector2(-0.0291849, 0.546606)
+scale = Vector2(0.394212, 0.355084)
+
+[node name="AnimatedSprite2D" parent="." index="2"]
+sprite_frames = SubResource("SpriteFrames_vrmxq")
 autoplay = "default"
 
-[node name="VisibleOnScreenNotifier2D" parent="." index="2"]
-position = Vector2(2.38419e-07, 0.5)
-scale = Vector2(0.4, 0.35)
-
 [node name="CollisionShape2D" type="CollisionShape2D" parent="." index="3"]
-position = Vector2(0, 0.5)
+position = Vector2(-8.9407e-08, 0.429657)
 shape = SubResource("RectangleShape2D_7o3m4")
+
+[node name="AnimationPlayer" type="AnimationPlayer" parent="." index="4"]
+libraries = {
+"": SubResource("AnimationLibrary_infu6")
+}
+
+[node name="Label" type="Label" parent="." index="5"]
+anchors_preset = 5
+anchor_left = 0.5
+anchor_right = 0.5
+offset_left = -15.0
+offset_top = -8.0
+offset_right = 14.0
+offset_bottom = 8.0
+grow_horizontal = 2
+size_flags_horizontal = 4
+theme_override_fonts/font = ExtResource("4_a1crc")
+theme_override_font_sizes/font_size = 12
+text = "+200"
+horizontal_alignment = 1

@@ -1,0 +1,30 @@
+[gd_scene load_steps=6 format=3 uid="uid://c6hoirs4lhylq"]
+
+[ext_resource type="PackedScene" uid="uid://i1mmxpjpent1" path="res://scenes/player_projectile.tscn" id="1_a5jjc"]
+[ext_resource type="Shader" path="res://shader/powerful_player_projectile_sprite.gdshader" id="2_bwoy1"]
+[ext_resource type="Texture2D" uid="uid://dsrobotp5hokg" path="res://assets/pico8_invaders_sprites_LARGE(1).png" id="3_oqeyq"]
+
+[sub_resource type="ShaderMaterial" id="ShaderMaterial_q5dvj"]
+shader = ExtResource("2_bwoy1")
+
+[sub_resource type="GDScript" id="GDScript_3h6yk"]
+script/source = "extends Sprite2D
+
+
+func _on_sprite_2d_flash_completed():
+	show()
+"
+
+[node name="PowerfulPlayerProjectile" instance=ExtResource("1_a5jjc")]
+damage = 250
+
+[node name="Sprite2D2" type="Sprite2D" parent="." index="3"]
+visible = false
+material = SubResource("ShaderMaterial_q5dvj")
+scale = Vector2(2.5, 2.5)
+texture = ExtResource("3_oqeyq")
+region_enabled = true
+region_rect = Rect2(0, 16, 8, 8)
+script = SubResource("GDScript_3h6yk")
+
+[connection signal="flash_completed" from="Sprite2D" to="Sprite2D2" method="_on_sprite_2d_flash_completed"]

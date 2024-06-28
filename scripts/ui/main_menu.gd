@@ -29,18 +29,19 @@ func on_enabled_changed():
 		$ParallaxBackground.hide()
 func on_pause(uid:int):
 	enabled=true
-	show()
+	
 	
 	
 func _on_level_1_button_button_down():
 	if level1 == null:
 		level1=level1_scene.instantiate()
 		level1.game_pause_triggered.connect(on_pause)
-		
+		if level2 != null:
+			level2.queue_free()
+			await level2.tree_exited
 		if get_tree().paused:
 			
-			if level2 != null:
-				level2.queue_free()
+			
 			get_tree().paused=false
 		get_tree().root.add_child(level1)
 	else:
@@ -53,11 +54,12 @@ func _on_level_2_button_button_down():
 	if level2 == null:
 		level2=level2_scene.instantiate()
 		level2.game_pause_triggered.connect(on_pause)
-		
+		if level1 != null:
+			level1.queue_free()
+			await level1.tree_exited
 		if get_tree().paused:
-			if level1 != null:
-				level1.queue_free()
-			get_tree().paused=false
+			
+			get_tree().paused=false  
 		get_tree().root.add_child(level2)
 	else:
 		

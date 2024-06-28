@@ -1,5 +1,9 @@
-res://scenes/ui/main_menu.tscn
+res://scenes/world.tscn
 res://shader/flash.gdshader
+res://shader/powerful_player_projectile_sprite.gdshader
 res://shader/boss_enemy.gdshader
 res://shader/bgremoval.gdshader
-res://scripts/ui/main_menu.gd
+res://scenes/player_projectile.tscn
+res://scenes/player.tscn
+res://scenes/power_up/player_bullet_scale_power_up.tscn
+res://scenes/boss_fight.tscn

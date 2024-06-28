@@ -1,0 +1,40 @@
+[gd_scene load_steps=7 format=3 uid="uid://c5tueres11aun"]
+
+[ext_resource type="PackedScene" uid="uid://bi6700oninjo3" path="res://scenes/power_up.tscn" id="1_phc4p"]
+[ext_resource type="Script" path="res://scripts/power_up/PlayerBulletScalePowerUp.gd" id="2_48bcv"]
+[ext_resource type="Texture2D" uid="uid://dsrobotp5hokg" path="res://assets/pico8_invaders_sprites_LARGE(1).png" id="3_sl0os"]
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_ll47b"]
+atlas = ExtResource("3_sl0os")
+region = Rect2(0, 40, 8, 8)
+
+[sub_resource type="SpriteFrames" id="SpriteFrames_kri6b"]
+animations = [{
+"frames": [{
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_ll47b")
+}],
+"loop": false,
+"name": &"default",
+"speed": 5.0
+}]
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_yqoxm"]
+size = Vector2(6.18719, 8.03262)
+
+[node name="PlayerBulletScalePowerUp" instance=ExtResource("1_phc4p")]
+script = ExtResource("2_48bcv")
+scale_multiplier = 2
+powerup_duration = 9.0
+
+[node name="VisibleOnScreenNotifier2D" parent="." index="1"]
+position = Vector2(-0.0205869, 0.00803593)
+scale = Vector2(0.32006, 0.402111)
+
+[node name="AnimatedSprite2D" parent="." index="2"]
+sprite_frames = SubResource("SpriteFrames_kri6b")
+autoplay = "default"
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="." index="3"]
+position = Vector2(0.0222635, 0.0168464)
+shape = SubResource("RectangleShape2D_yqoxm")
