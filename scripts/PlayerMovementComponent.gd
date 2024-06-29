@@ -1,22 +1,31 @@
 extends "res://scripts/MovementComponent.gd"
-	
-var is_clicked:bool=false
-@export var input_dead_zone_squared:int = 20
+
+@onready var joystick:Control=get_tree().get_first_node_in_group("virtual_joystick")
+@export var touch_input_dead_zone:int=80
+@export var touch_input_max_speed:int=180
+
 func _physics_process(delta)->void:
+	#if Input.is_action_pressed("click") and joystick != null:
+		#normalized_dir = joystick.output.normalized()
+	#else:
+		#normalized_dir = Vector2(Input.get_action_strength("ui_right")-Input.get_action_strength("ui_left"),Input.get_action_strength("ui_down")-Input.get_action_strength("ui_up")).normalized()
+		
+	var call_super:bool=true
 	if Input.is_action_pressed("click"):
-		is_clicked = true
-	elif Input.is_action_just_released("click"):
-		is_clicked = false
-	if is_clicked:
-		#velocity = (get_global_mouse_position() - global_position).normalized() * max_speed
+		var direction:Vector2 = get_global_mouse_position()-global_position
 		
-		var input := get_global_mouse_position()-global_position
-		
-		if input.length_squared() > input_dead_zone_squared:
-			normalized_dir = input.normalized()
+		if direction.length_squared()>=touch_input_dead_zone:
+			velocity = direction.normalized() * touch_input_max_speed
+			call_super=false
 		else:
 			normalized_dir=Vector2.ZERO
 	else:
-		normalized_dir = Vector2(Input.get_action_strength("ui_right")-Input.get_action_strength("ui_left"),Input.get_action_strength("ui_down")-Input.get_action_strength("ui_up")).normalized()
-	super._physics_process(delta)
+		normalized_dir=Vector2(Input.get_action_strength("ui_right")-Input.get_action_strength("ui_left"),Input.get_action_strength("ui_down")-Input.get_action_strength("ui_up"))
+	if call_super:
+		super._physics_process(delta)
+	else:
+		owner.velocity = velocity
+		owner.move_and_slide()
+	#super._physics_process(delta)
+
 

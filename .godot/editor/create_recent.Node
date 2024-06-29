@@ -1,7 +1,8 @@
+MarginContainer
+Node2D
 CollisionShape2D
 Sprite2D
 Label
-Node2D
 Polygon2D
 AnimationPlayer
 Timer
@@ -10,5 +11,4 @@ Control
 CanvasLayer
 Button
 VBoxContainer
-MarginContainer
 TextureRect

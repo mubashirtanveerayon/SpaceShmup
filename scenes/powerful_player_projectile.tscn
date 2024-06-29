@@ -1,7 +1,8 @@
-[gd_scene load_steps=6 format=3 uid="uid://c6hoirs4lhylq"]
+[gd_scene load_steps=7 format=3 uid="uid://c6hoirs4lhylq"]
 
 [ext_resource type="PackedScene" uid="uid://i1mmxpjpent1" path="res://scenes/player_projectile.tscn" id="1_a5jjc"]
 [ext_resource type="Shader" path="res://shader/powerful_player_projectile_sprite.gdshader" id="2_bwoy1"]
+[ext_resource type="Script" path="res://scripts/player_projectile.gd" id="2_knp3f"]
 [ext_resource type="Texture2D" uid="uid://dsrobotp5hokg" path="res://assets/pico8_invaders_sprites_LARGE(1).png" id="3_oqeyq"]
 
 [sub_resource type="ShaderMaterial" id="ShaderMaterial_q5dvj"]
@@ -16,6 +17,8 @@ func _on_sprite_2d_flash_completed():
 "
 
 [node name="PowerfulPlayerProjectile" instance=ExtResource("1_a5jjc")]
+script = ExtResource("2_knp3f")
+can_take_damage = true
 damage = 250
 
 [node name="Sprite2D2" type="Sprite2D" parent="." index="3"]

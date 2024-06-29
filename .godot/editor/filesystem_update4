@@ -7,3 +7,8 @@ res://scenes/player_projectile.tscn
 res://scenes/player.tscn
 res://scenes/power_up/player_bullet_scale_power_up.tscn
 res://scenes/boss_fight.tscn
+res://scenes/powerful_player_projectile.tscn
+res://addons/virtual_joystick/virtual_joystick_scene.tscn
+res://addons/virtual_joystick/virtual_joystick.gd
+res://scenes/ui/joystick.tscn
+res://scripts/PlayerMovementComponent.gd

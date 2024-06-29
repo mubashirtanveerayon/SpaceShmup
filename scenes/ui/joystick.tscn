@@ -1,0 +1,24 @@
+[gd_scene load_steps=2 format=3 uid="uid://cbx01v1uhhs20"]
+
+[ext_resource type="PackedScene" uid="uid://dmr0fcamx7t56" path="res://addons/virtual_joystick/virtual_joystick_scene.tscn" id="1_3toun"]
+
+[node name="Joystick" type="Control"]
+layout_mode = 3
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+
+[node name="Virtual Joystick" parent="." instance=ExtResource("1_3toun")]
+layout_mode = 1
+anchors_preset = 15
+anchor_top = 0.0
+anchor_right = 1.0
+offset_top = 120.0
+offset_right = 715.0
+offset_bottom = 1400.0
+grow_horizontal = 2
+grow_vertical = 2
+scale = Vector2(0.2, 0.2)
+clampzone_size = 20.0

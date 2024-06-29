@@ -104,7 +104,8 @@ shape = SubResource("CircleShape2D_61wk0")
 
 [node name="MovementComponent" parent="." index="3"]
 script = ExtResource("5_bu2uy")
-input_dead_zone_squared = 20
+touch_input_dead_zone = 80
+touch_input_max_speed = 180
 acceleration = 800
 max_speed = 300
 friction = 1000
