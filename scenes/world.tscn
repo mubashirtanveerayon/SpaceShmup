@@ -1,4 +1,4 @@
-[gd_scene load_steps=24 format=3 uid="uid://bop47ake2pexq"]
+[gd_scene load_steps=28 format=3 uid="uid://bop47ake2pexq"]
 
 [ext_resource type="PackedScene" uid="uid://donrkn5p10hg" path="res://scenes/player.tscn" id="1_ys2o1"]
 [ext_resource type="PackedScene" uid="uid://125xfvevxrgc" path="res://scenes/parallax_background.tscn" id="2_4bh2e"]
@@ -6,10 +6,13 @@
 [ext_resource type="PackedScene" uid="uid://bs3bxh8urlbaj" path="res://scenes/boundary.tscn" id="2_t7ai7"]
 [ext_resource type="PackedScene" uid="uid://dcv6r7cassn87" path="res://scenes/limited_spawner.tscn" id="4_5q2j5"]
 [ext_resource type="Texture2D" uid="uid://dsrobotp5hokg" path="res://assets/pico8_invaders_sprites_LARGE(1).png" id="5_2st35"]
+[ext_resource type="Texture2D" uid="uid://dg13a7318xkf1" path="res://assets/pause_up.png" id="6_c8x4h"]
 [ext_resource type="PackedScene" uid="uid://chxhntyic1up" path="res://scenes/shooter_enemy.tscn" id="6_ll2sy"]
 [ext_resource type="PackedScene" uid="uid://cw3ufjy2t8d2p" path="res://scenes/bomber_ufo.tscn" id="7_ctqda"]
+[ext_resource type="Texture2D" uid="uid://5l0w3kifsxei" path="res://assets/pause_down.png" id="7_kjabt"]
 [ext_resource type="FontFile" uid="uid://c45raxvnju0m3" path="res://assets/fonts/kenney_mini_square.ttf" id="8_3i6uo"]
 [ext_resource type="Script" path="res://scripts/ui/stats.gd" id="8_4qvps"]
+[ext_resource type="Texture2D" uid="uid://cs42s7ybynsbr" path="res://assets/pause_hover.png" id="8_6b6fg"]
 [ext_resource type="Theme" uid="uid://bllenujqgun7o" path="res://data/ui_theme.tres" id="8_whqfb"]
 [ext_resource type="PackedScene" uid="uid://7n47pc0cdrlq" path="res://scenes/power_up/power_up_spawner.tscn" id="10_37tgw"]
 [ext_resource type="PackedScene" uid="uid://bb8b3ynurjoo3" path="res://scenes/power_up/health_power_up.tscn" id="12_5qwh8"]
@@ -30,6 +33,7 @@ func pause():
 	hide()
 	$ParallaxBackground.hide()
 	$HUD.hide()
+	game_pause_triggered.emit(unique_id)
 
 func resume():
 	get_tree().paused=false
@@ -41,7 +45,7 @@ func resume():
 func _process(delta):
 	if Input.is_action_pressed(\"ui_cancel\") and not get_tree().paused:
 		pause()
-		game_pause_triggered.emit(unique_id)
+		
 "
 
 [sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_vk5xc"]
@@ -52,6 +56,17 @@ bg_color = Color(0.345098, 1, 0.470588, 1)
 [sub_resource type="AtlasTexture" id="AtlasTexture_et7ih"]
 atlas = ExtResource("5_2st35")
 region = Rect2(0, 104, 128, 24)
+
+[sub_resource type="GDScript" id="GDScript_4wm78"]
+script/source = "extends TextureButton
+
+
+@onready var world_node:Node2D=get_tree().get_first_node_in_group(\"world\")
+
+func _on_pressed():
+	if world_node != null and not get_tree().paused:
+		world_node.pause()
+"
 
 [sub_resource type="GDScript" id="GDScript_2epuu"]
 script/source = "extends Camera2D
@@ -178,6 +193,18 @@ offset_bottom = 24.0
 texture = SubResource("AtlasTexture_et7ih")
 stretch_mode = 1
 
+[node name="TextureButton" type="TextureButton" parent="HUD/Stats"]
+layout_mode = 0
+offset_left = 158.0
+offset_top = 25.0
+offset_right = 175.0
+offset_bottom = 44.0
+texture_normal = ExtResource("6_c8x4h")
+texture_pressed = ExtResource("7_kjabt")
+texture_hover = ExtResource("8_6b6fg")
+stretch_mode = 3
+script = SubResource("GDScript_4wm78")
+
 [node name="Player" parent="." instance=ExtResource("1_ys2o1")]
 position = Vector2(89, 284)
 wall_min_slide_angle = 0.261799
@@ -240,3 +267,5 @@ position = Vector2(90, 160)
 script = SubResource("GDScript_2epuu")
 shake_fade_intensity = 3.0
 shake_intensity = 7.0
+
+[connection signal="pressed" from="HUD/Stats/TextureButton" to="HUD/Stats/TextureButton" method="_on_pressed"]

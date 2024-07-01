@@ -1,4 +1,4 @@
-[gd_scene load_steps=25 format=3 uid="uid://f1mhk0w2r7hy"]
+[gd_scene load_steps=29 format=3 uid="uid://f1mhk0w2r7hy"]
 
 [ext_resource type="PackedScene" uid="uid://125xfvevxrgc" path="res://scenes/parallax_background.tscn" id="1_jlm3x"]
 [ext_resource type="PackedScene" uid="uid://donrkn5p10hg" path="res://scenes/player.tscn" id="2_s76cr"]
@@ -17,6 +17,9 @@
 [ext_resource type="Texture2D" uid="uid://dsrobotp5hokg" path="res://assets/pico8_invaders_sprites_LARGE(1).png" id="14_vkkwt"]
 [ext_resource type="PackedScene" uid="uid://c5tueres11aun" path="res://scenes/power_up/player_bullet_scale_power_up.tscn" id="14_wbvb7"]
 [ext_resource type="AudioStream" uid="uid://b2c7xsmxb7tc7" path="res://assets/audio/2021-08-30_-_Boss_Time_-_www.FesliyanStudios.com.mp3" id="16_fxeev"]
+[ext_resource type="Texture2D" uid="uid://dg13a7318xkf1" path="res://assets/pause_up.png" id="17_6sap6"]
+[ext_resource type="Texture2D" uid="uid://5l0w3kifsxei" path="res://assets/pause_down.png" id="18_ma0v4"]
+[ext_resource type="Texture2D" uid="uid://cs42s7ybynsbr" path="res://assets/pause_hover.png" id="19_tae6d"]
 
 [sub_resource type="GDScript" id="GDScript_op0wo"]
 script/source = "extends Node2D
@@ -31,6 +34,7 @@ func pause():
 	hide()
 	$ParallaxBackground.hide()
 	$HUD.hide()
+	game_pause_triggered.emit(unique_id)
 
 func resume():
 	get_tree().paused=false
@@ -42,7 +46,7 @@ func resume():
 func _process(delta):
 	if Input.is_action_pressed(\"ui_cancel\") and not get_tree().paused:
 		pause()
-		game_pause_triggered.emit(unique_id)
+		
 
 func _on_stats_boss_enemy_dead():
 	for child in get_children(false):
@@ -150,6 +154,17 @@ bg_color = Color(1, 0.14902, 0.113725, 1)
 [sub_resource type="AtlasTexture" id="AtlasTexture_40u1h"]
 atlas = ExtResource("14_vkkwt")
 region = Rect2(0, 104, 128, 24)
+
+[sub_resource type="GDScript" id="GDScript_4or3v"]
+script/source = "extends TextureButton
+
+
+@onready var world_node:Node2D=get_tree().get_first_node_in_group(\"world\")
+
+func _on_pressed():
+	if world_node != null and not get_tree().paused:
+		world_node.pause()
+"
 
 [node name="BossFight" type="Node2D" groups=["world"]]
 script = SubResource("GDScript_op0wo")
@@ -270,8 +285,20 @@ offset_bottom = 24.0
 texture = SubResource("AtlasTexture_40u1h")
 stretch_mode = 1
 
+[node name="TextureButton" type="TextureButton" parent="HUD/Stats"]
+offset_left = 158.0
+offset_top = 25.0
+offset_right = 175.0
+offset_bottom = 44.0
+texture_normal = ExtResource("17_6sap6")
+texture_pressed = ExtResource("18_ma0v4")
+texture_hover = ExtResource("19_tae6d")
+stretch_mode = 3
+script = SubResource("GDScript_4or3v")
+
 [node name="AudioStreamPlayer" type="AudioStreamPlayer" parent="."]
 stream = ExtResource("16_fxeev")
 autoplay = true
 
 [connection signal="boss_enemy_dead" from="HUD/Stats" to="." method="_on_stats_boss_enemy_dead"]
+[connection signal="pressed" from="HUD/Stats/TextureButton" to="HUD/Stats/TextureButton" method="_on_pressed"]
